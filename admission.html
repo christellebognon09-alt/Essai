@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admission - ESF Bénin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ADMISSION PAGE STYLES */
+        .admission-hero {
+            background-color: #8178B1;
+            padding: 120px 5% 80px;
+            color: white;
+            text-align: center;
+        }
+
+        .admission-hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .admission-hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .admission-content {
+            padding: 100px 5%;
+            background-color: #fff;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .process-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .process-title h2 {
+            font-size: 2.5rem;
+            color: var(--text-dark);
+            position: relative;
+            display: inline-block;
+            padding-bottom: 15px;
+        }
+
+        .process-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: #8178B1;
+            border-radius: 2px;
+        }
+
+        .admission-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: flex-start;
+        }
+
+        .pieces-list {
+            background-color: #f9fafb;
+            padding: 50px;
+            border-radius: 30px;
+            border: 1px solid #f3f4f6;
+        }
+
+        .pieces-list h3 {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: #8178B1;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .pieces-list ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .pieces-list li {
+            display: flex;
+            gap: 15px;
+            font-size: 1.05rem;
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        .piece-letter {
+            background-color: #8178B1;
+            color: white;
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Timeline Styles */
+        .timeline-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .step-item {
+            display: flex;
+            gap: 25px;
+        }
+
+        .step-number {
+            background-color: #111827;
+            color: white;
+            width: 50px;
+            height: 50px;
+            min-width: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .step-text h4 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .step-text p {
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .info-strip {
+            background-color: #111827;
+            color: white;
+            padding: 60px 5%;
+            border-radius: 30px;
+            margin: 80px 0;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+
+        .info-box h5 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            opacity: 0.7;
+        }
+
+        .info-box p {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 80px 5%;
+            background-color: #f3f0ff;
+            border-radius: 40px;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 40px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-register {
+            background-color: #8178B1;
+            color: white;
+            padding: 20px 50px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(129, 120, 177, 0.3);
+        }
+
+        .btn-register:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(129, 120, 177, 0.4);
+            background-color: #6d64a0;
+        }
+
+        @media (max-width: 900px) {
+            .admission-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .info-strip {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="logo">
+            <a href="index.html"
+                style="text-decoration: none; font-size: 32px; font-weight: 800; font-family: 'Outfit', sans-serif;">
+                <span style="color: #8178B1;">Fau</span><span style="color: #000000;">con</span>
+            </a>
+        </div>
+        <div class="header-center">
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="filieres.html">Filières</a></li>
+                    <li><a href="admission.html" class="active">Admission</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">S'inscrire</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="header-right-search">
+            <div class="search-box">
+                <input type="text" placeholder="Rechercher...">
+                <button type="button"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="admission-hero">
+            <h1>Admission & Inscription</h1>
+            <p>Rejoignez une institution d'excellence et donnez une nouvelle dimension à votre avenir académique et
+                professionnel.</p>
+        </section>
+
+        <section class="admission-content">
+            <div class="process-title">
+                <h2>Processus d'inscription</h2>
+            </div>
+
+            <div class="admission-grid">
+                <!-- PIECES A FOURNIR -->
+                <div class="pieces-list" data-animate="fade-right">
+                    <h3><i class="fa-solid fa-file-invoice"></i> Pièces à fournir</h3>
+                    <ul>
+                        <li><span class="piece-letter">a</span> Demande d’inscription adressée au DG</li>
+                        <li><span class="piece-letter">b</span> Copie légalisé de l’attestation du Baccalauréat</li>
+                        <li><span class="piece-letter">c</span> Bulletins de note de la dernière année d’étude</li>
+                        <li><span class="piece-letter">d</span> Copie légalisé de l’extrait d’acte de naissance</li>
+                        <li><span class="piece-letter">e</span> Deux (02) photos d’identité</li>
+                        <li><span class="piece-letter">f</span> Curriculum Vitae</li>
+                    </ul>
+                </div>
+
+                <!-- STEPS TIMELINE -->
+                <div class="timeline-steps">
+                    <div class="step-item" data-animate="fade-up">
+                        <div class="step-number">2</div>
+                        <div class="step-text">
+                            <h4>Première étape</h4>
+                            <p>Réception des dossiers d’inscription des nouveaux bacheliers et de réinscription des
+                                anciens étudiants au Secrétariat Administratif et Pédagogique</p>
+                        </div>
+                    </div>
+
+                    <div class="step-item" data-animate="fade-up">
+                        <div class="step-number">3</div>
+                        <div class="step-text">
+                            <h4>Deuxième étape</h4>
+                            <p>Etude des dossiers des étudiants nouvellement inscrits</p>
+                        </div>
+                    </div>
+
+                    <div class="step-item" data-animate="fade-up">
+                        <div class="step-number">4</div>
+                        <div class="step-text">
+                            <h4>Troisième étape</h4>
+                            <p>Paiement des frais de scolarité.</p>
+                        </div>
+                    </div>
+
+                    <div class="step-item" data-animate="fade-up">
+                        <div class="step-number">5</div>
+                        <div class="step-text">
+                            <h4>Quatrième étape</h4>
+                            <p>Immatriculation des étudiants.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ANNEE ACADEMIQUE STRIP -->
+            <div class="info-strip" data-animate="fade-up">
+                <div class="info-box">
+                    <h5>Année Académique</h5>
+                    <p>2022-2023</p>
+                </div>
+                <div class="info-box">
+                    <h5>Date de rentrée</h5>
+                    <p>03 Octobre 2021</p>
+                </div>
+                <div class="info-box">
+                    <h5>Localisation</h5>
+                    <p>Abomey-Calavi, derrière la Pharmacie Château d’eau</p>
+                </div>
+            </div>
+
+            <!-- CTA SECTION -->
+            <div class="cta-section" data-animate="fade-up">
+                <h2>S'inscrire en ligne</h2>
+                <p>Cliquez sur le bouton ci-dessous ensuite remplissez étape par étape votre candidature sur notre
+                    espace dédié.</p>
+                <a href="#" class="btn-register">Inscription en ligne <i class="fa-solid fa-paper-plane"></i></a>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-top">
+            <div class="footer-col">
+                <h4>Entreprise</h4>
+                <ul>
+                    <li><a href="index.html">À Propos</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Explorer</h4>
+                <ul>
+                    <li><a href="#">Actualités</a></li>
+                    <li><a href="#">Nos Campus</a></li>
+                    <li><a href="filieres.html">Formations</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Liens Rapides</h4>
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="admission.html">Admissions</a></li>
+                    <li><a href="#">Nous Contacter</a></li>
+                </ul>
+            </div>
+            <div class="footer-col contact-col">
+                <h4>Contact</h4>
+                <address>
+                    Avenue des Universités, Cotonou, Bénin<br>
+                    <br>
+                    <i class="fa-solid fa-phone"></i> +229 00 55 59 27<br>
+                    <i class="fa-solid fa-envelope"></i> contact@esfbenin.net
+                </address>
+            </div>
+        </div>
+
+        <div class="footer-card">
+            <div class="footer-card-left">
+                <h3 class="footer-logo">ESF Le Faucon</h3>
+                <p>Nous croyons en un avenir où l'éducation transforme des vies et forme des leaders d'excellence pour
+                    affronter les défis de demain.</p>
+                <div class="footer-legal">
+                    <a href="#">Conditions d'utilisation</a>
+                    <a href="#">Politique de confidentialité</a>
+                    <a href="#">Fonctionnement du site</a>
+                </div>
+            </div>
+            <div class="footer-card-right">
+                <h4>Abonnez-vous à notre Newsletter</h4>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Entrez votre Email" required>
+                    <button type="submit" class="btn btn-primary"
+                        style="background-color: #8178B1; border: none; padding: 12px 25px; border-radius: 50px; color: white; cursor: pointer;">S'abonner</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 - Tous droits réservés - ESF Bénin.</p>
+        </div>
+    </footer>
+
+    <script src="effects.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nos Filières - ESF Bénin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* FILIERES PAGE SPECIFIC STYLES */
+        .filieres-hero {
+            background-color: #8178B1;
+            padding: 120px 5% 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 360px;
+            color: white;
+        }
+
+        .filieres-hero-content {
+            flex: 1;
+            max-width: 600px;
+        }
+
+        .filieres-hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 24px;
+        }
+
+        .filieres-hero-content p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .filieres-search-container {
+            position: relative;
+            max-width: 500px;
+        }
+
+        .filieres-search-container input {
+            width: 100%;
+            padding: 15px 25px 15px 50px;
+            border-radius: 50px;
+            border: 1px solid #e5e7eb;
+            font-size: 1rem;
+            outline: none;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .filieres-search-container i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+
+        .filieres-hero-img {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .filieres-hero-img img {
+            max-width: 400px;
+            border-radius: 20px;
+        }
+
+        .filieres-grid-wrapper {
+            padding: 80px 5%;
+            background-color: #ffffff;
+        }
+
+        .filieres-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .filiere-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: left;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            border: 1px solid #f3f4f6;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .filiere-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-color: #8178B1;
+        }
+
+        .filiere-icon-box {
+            width: 60px;
+            height: 60px;
+            background-color: #f3f0ff;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #8178B1;
+            transition: all 0.3s;
+        }
+
+        .filiere-card:hover .filiere-icon-box {
+            background-color: #8178B1;
+            color: white;
+        }
+
+        .filiere-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.4;
+        }
+
+        .filiere-card p {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .filiere-btn {
+            font-weight: 600;
+            color: #8178B1;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: auto;
+        }
+
+        @media (max-width: 1200px) {
+            .filieres-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .filieres-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filieres-hero {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .filieres-hero-img {
+                display: none;
+            }
+
+            .filieres-search-container {
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .filieres-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="logo">
+            <a href="index.html"
+                style="text-decoration: none; font-size: 32px; font-weight: 800; font-family: 'Outfit', sans-serif;">
+                <span style="color: #8178B1;">Fau</span><span style="color: #000000;">con</span>
+            </a>
+        </div>
+        <div class="header-center">
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="filieres.html" class="active">Filières</a></li>
+                    <li><a href="admission.html">Admission</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">S'inscrire</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="header-right-search">
+            <div class="search-box">
+                <input type="text" placeholder="Rechercher une filière...">
+                <button type="button"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="filieres-hero">
+            <div class="filieres-hero-content">
+                <h1>Nos Filières de<br>Formation</h1>
+                <p>Découvrez nos programmes d'excellence conçus pour vous préparer aux défis du monde professionnel et
+                    propulser votre carrière.</p>
+                <div class="filieres-search-container">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Quelle filière vous passionne ?">
+                </div>
+            </div>
+            <div class="filieres-hero-img">
+                <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80"
+                    alt="Education">
+            </div>
+        </section>
+
+        <section class="filieres-grid-wrapper">
+            <div class="filieres-grid">
+                <!-- 1 -->
+                <div class="filiere-card" data-animate="fade-up" style="transition-delay: 0.1s;">
+                    <div class="filiere-icon-box">
+                        <i class="fa-solid fa-flask-vial"></i>
+                    </div>
+                    <h3>Analyses Biologiques et Biochimiques</h3>
+                    <p>Maîtrisez les techniques de laboratoire et contribuez aux avancées de la santé et de la
+                        recherche.
+                    </p>
+                    <a href="#" class="filiere-btn">S'inscrire <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <!-- 2 -->
+                <div class="filiere-card" data-animate="fade-up" style="transition-delay: 0.2s;">
+                    <div class="filiere-icon-box">
+                        <i class="fa-solid fa-compass-drafting"></i>
+                    </div>
+                    <h3>Bâtiments et Travaux Publics</h3>
+                    <p>Devenez un expert de la construction et participez au développement des infrastructures de
+                        demain.
+                    </p>
+                    <a href="#" class="filiere-btn">S'inscrire <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <!-- 3 -->
+                <div class="filiere-card" data-animate="fade-up" style="transition-delay: 0.3s;">
+                    <div class="filiere-icon-box">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                    </div>
+                    <h3>Géomètre Topographe</h3>
+                    <p>Apprenez à mesurer et représenter le territoire avec précision grâce aux dernières technologies.
+                    </p>
+                    <a href="#" class="filiere-btn">S'inscrire <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <!-- 4 -->
+                <div class="filiere-card" data-animate="fade-up" style="transition-delay: 0.4s;">
+                    <div class="filiere-icon-box">
+                        <i class="fa-solid fa-bolt-lightning"></i>
+                    </div>
+                    <h3>Génie Electrique et Energies Renouvelables</h3>
+                    <p>Relevez les défis énergétiques et maîtrisez les systèmes électriques modernes.</p>
+                    <a href="#" class="filiere-btn">S'inscrire <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <!-- 5 -->
+                <div class="filiere-card" data-animate="fade-up" style="transition-delay: 0.5s;">
+                    <div class="filiere-icon-box">
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+                    <h3>Système Informatique et Logiciel</h3>
+                    <p>Concevez des solutions logicielles innovantes et maîtrisez le développement web et mobile.</p>
+                    <a href="#" class="filiere-btn">S'inscrire <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <!-- 6 -->
+                <div class="filiere-card" data-animate="fade-up" style="transition-delay: 0.6s;">
+                    <div class="filiere-icon-box">
+                        <i class="fa-solid fa-building-columns"></i>
+                    </div>
+                    <h3>Banque Finance Assurance</h3>
+                    <p>Acquérez les compétences clés pour évoluer dans le secteur financier et bancaire.</p>
+                    <a href="#" class="filiere-btn">S'inscrire <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <!-- 7 -->
+                <div class="filiere-card" data-animate="fade-up" style="transition-delay: 0.7s;">
+                    <div class="filiere-icon-box">
+                        <i class="fa-solid fa-calculator"></i>
+                    </div>
+                    <h3>Finance Comptabilité Audit</h3>
+                    <p>Devenez un pilier de la gestion d'entreprise et maîtrisez les chiffres avec rigueur.</p>
+                    <a href="#" class="filiere-btn">S'inscrire <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <!-- 8 -->
+                <div class="filiere-card" data-animate="fade-up" style="transition-delay: 0.8s;">
+                    <div class="filiere-icon-box">
+                        <i class="fa-solid fa-users-gear"></i>
+                    </div>
+                    <h3>Gestion des Ressources Humaines</h3>
+                    <p>Développez vos compétences en management humain et valorisez le capital de l'entreprise.</p>
+                    <a href="#" class="filiere-btn">S'inscrire <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <!-- 9 -->
+                <div class="filiere-card" data-animate="fade-up" style="transition-delay: 0.9s;">
+                    <div class="filiere-icon-box">
+                        <i class="fa-solid fa-magnifying-glass-chart"></i>
+                    </div>
+                    <h3>Marketing Communication Commerce</h3>
+                    <p>Donnez vie aux marques et maîtrisez les stratégies commerciales et de communication.</p>
+                    <a href="#" class="filiere-btn">S'inscrire <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <!-- 10 -->
+                <div class="filiere-card" data-animate="fade-up" style="transition-delay: 1.0s;">
+                    <div class="filiere-icon-box">
+                        <i class="fa-solid fa-truck-ramp-box"></i>
+                    </div>
+                    <h3>Transport logistique</h3>
+                    <p>Optimisez les flux de marchandises et maîtrisez la chaîne d'approvisionnement mondiale.</p>
+                    <a href="#" class="filiere-btn">S'inscrire <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <!-- 11 -->
+                <div class="filiere-card" data-animate="fade-up" style="transition-delay: 1.1s;">
+                    <div class="filiere-icon-box">
+                        <i class="fa-solid fa-umbrella-beach"></i>
+                    </div>
+                    <h3>Hôtellerie et Tourisme</h3>
+                    <p>Préparez-vous aux métiers du service et de l'accueil dans un secteur en pleine mutation.</p>
+                    <a href="#" class="filiere-btn">S'inscrire <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <!-- 12 -->
+                <div class="filiere-card" data-animate="fade-up" style="transition-delay: 1.2s;">
+                    <div class="filiere-icon-box">
+                        <i class="fa-solid fa-faucet-drip"></i>
+                    </div>
+                    <h3>Génie de l’Environnement – Traitement des déchets et des eaux</h3>
+                    <p>Engagez-vous pour la planète et maîtrisez les techniques de préservation de l'écosystème.</p>
+                    <a href="#" class="filiere-btn">S'inscrire <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-top">
+            <div class="footer-col">
+                <h4>Entreprise</h4>
+                <ul>
+                    <li><a href="index.html">À Propos</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Explorer</h4>
+                <ul>
+                    <li><a href="#">Actualités</a></li>
+                    <li><a href="#">Nos Campus</a></li>
+                    <li><a href="filieres.html">Formations</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Liens Rapides</h4>
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="#">Admissions</a></li>
+                    <li><a href="#">Nous Contacter</a></li>
+                </ul>
+            </div>
+            <div class="footer-col contact-col">
+                <h4>Contact</h4>
+                <address>
+                    Avenue des Universités, Cotonou, Bénin<br>
+                    <br>
+                    <i class="fa-solid fa-phone"></i> +229 00 55 59 27<br>
+                    <i class="fa-solid fa-envelope"></i> contact@esfbenin.net
+                </address>
+            </div>
+        </div>
+
+        <div class="footer-card">
+            <div class="footer-card-left">
+                <h3 class="footer-logo">ESF Le Faucon</h3>
+                <p>Nous croyons en un avenir où l'éducation transforme des vies et forme des leaders d'excellence pour
+                    affronter les défis de demain.</p>
+                <div class="footer-legal">
+                    <a href="#">Conditions d'utilisation</a>
+                    <a href="#">Politique de confidentialité</a>
+                    <a href="#">Fonctionnement du site</a>
+                </div>
+            </div>
+            <div class="footer-card-right">
+                <h4>Abonnez-vous à notre Newsletter</h4>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Entrez votre Email" required>
+                    <button type="submit" class="btn btn-primary"
+                        style="background-color: #8178B1; border: none; padding: 12px 25px; border-radius: 50px; color: white; cursor: pointer;">S'abonner</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 - Tous droits réservés - ESF Bénin.</p>
+        </div>
+    </footer>
+
+    <script src="effects.js"></script>
+</body>
+
+</html>
