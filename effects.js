@@ -19,4 +19,16 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll('[data-animate]').forEach(elem => {
         observer.observe(elem);
     });
+
+    // Header scroll effect for home page
+    const homeHeader = document.querySelector('.home-header');
+    if (homeHeader) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                homeHeader.classList.add('scrolled');
+            } else {
+                homeHeader.classList.remove('scrolled');
+            }
+        });
+    }
 });

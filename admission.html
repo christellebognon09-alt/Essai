@@ -5,34 +5,234 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admission - ESF Bénin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* ADMISSION PAGE STYLES */
-        .admission-hero {
+        /* ADMISSION PAGE HERO REDESIGN */
+        .hero-wrapper-full {
             background-color: #8178B1;
-            padding: 120px 5% 80px;
-            color: white;
-            text-align: center;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
         }
 
-        .admission-hero h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 20px;
+        /* Subtle background pattern could go here, simulating the triangles in the mockup */
+        .hero-wrapper-full::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(129, 120, 177, 0.03) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(129, 120, 177, 0.05) 0%, transparent 20%);
+            pointer-events: none;
+            z-index: 0;
         }
 
-        .admission-hero p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            max-width: 700px;
+        .adm-hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 130px 5% 60px; /* added top padding to clear the 90px header */
+            position: relative;
+            min-height: auto;
+            max-width: 1400px;
             margin: 0 auto;
+            z-index: 1;
+        }
+
+        .adm-hero-content {
+            flex: 1;
+            max-width: 550px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .adm-subtitle {
+            font-size: 1.1rem;
+            color: #ffffff;
+            opacity: 0.9;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .adm-hero-title {
+            font-size: 4.5rem;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.1;
+            margin-bottom: 25px;
+            letter-spacing: -1.5px;
+        }
+
+        .adm-hero-title .highlight {
+            color: #ffffff;
+            position: relative;
+            display: inline-block;
+        }
+
+        .adm-hero-desc {
+            font-size: 1.15rem;
+            color: #f3f4f6;
+            line-height: 1.7;
+            margin-bottom: 40px;
+            max-width: 500px;
+            font-weight: 400;
+        }
+
+        .btn-adm-hero {
+            background-color: #ffffff;
+            color: #8178B1;
+            padding: 16px 35px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-adm-hero:hover {
+            background-color: #f3f4f6;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
+            color: #8178B1;
+        }
+
+        .adm-hero-image-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            position: relative;
+            z-index: 5;
+            padding-right: 50px;
+        }
+
+        /* The circular image container */
+        .adm-hero-image {
+            position: relative;
+            width: 380px;
+            height: 380px;
+            border-radius: 50%;
+            z-index: 5;
+            box-shadow: 0 25px 50px -12px rgba(129, 120, 177, 0.25);
+        }
+
+        /* The offset background circle */
+        .adm-hero-image::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -30px;
+            width: 100%;
+            height: 100%;
+            background-color: #f3f0ff;
+            /* Light mauve blob */
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .adm-hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .float-badge {
+            position: absolute;
+            background: #ffffff;
+            color: #8178B1;
+            padding: 20px;
+            border-radius: 50%;
+            width: 130px;
+            height: 130px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            top: 15%;
+            left: -40px;
+            z-index: 10;
+            border: 4px solid #8178B1;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .float-badge i {
+            font-size: 1.6rem;
+            margin-bottom: 5px;
+        }
+
+        .float-badge span {
+            font-weight: 800;
+            font-size: 1.4rem;
+            line-height: 1;
+        }
+
+        .float-badge small {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            margin-top: 2px;
+        }
+
+        .float-rating {
+            position: absolute;
+            top: 5%;
+            right: 15px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+            z-index: 10;
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #111827;
+        }
+
+        @media (max-width: 900px) {
+            .adm-hero {
+                flex-direction: column;
+                padding-top: 120px;
+                text-align: center;
+            }
+
+            .adm-hero-title {
+                font-size: 3rem;
+            }
+
+            .float-badge {
+                display: none;
+            }
+
+            .adm-hero-image-wrapper {
+                margin-top: 50px;
+                padding-right: 0;
+                justify-content: center;
+                width: 100%;
+            }
+
+            .adm-hero-image {
+                width: 350px;
+                height: 350px;
+            }
         }
 
         .admission-content {
-            padding: 100px 5%;
+            padding: 40px 5% 100px;
             background-color: #fff;
             max-width: 1200px;
             margin: 0 auto;
@@ -154,29 +354,32 @@
         }
 
         .info-strip {
-            background-color: #111827;
-            color: white;
-            padding: 60px 5%;
-            border-radius: 30px;
-            margin: 80px 0;
+            background-color: #0b0f19;
+            color: #ffffff;
+            padding: 25px 5%;
+            margin: 0;
             display: flex;
             justify-content: space-around;
             text-align: center;
             flex-wrap: wrap;
             gap: 40px;
-        }
-
-        .info-box h5 {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
-            opacity: 0.7;
+            width: 100%;
         }
 
         .info-box p {
-            font-size: 1.4rem;
-            font-weight: 600;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .info-box h5 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            color: #8178B1;
+            font-weight: 700;
         }
 
         .cta-section {
@@ -201,26 +404,7 @@
             margin-right: auto;
         }
 
-        .btn-register {
-            background-color: #8178B1;
-            color: white;
-            padding: 20px 50px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-size: 1.2rem;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 15px;
-            transition: all 0.3s;
-            box-shadow: 0 10px 20px rgba(129, 120, 177, 0.3);
-        }
-
-        .btn-register:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(129, 120, 177, 0.4);
-            background-color: #6d64a0;
-        }
+        /* OVERRIDE REMOVED */
 
         @media (max-width: 900px) {
             .admission-grid {
@@ -235,10 +419,10 @@
 </head>
 
 <body>
-    <header class="site-header">
+    <header class="site-header home-header">
         <div class="logo">
             <a href="index.html"
-                style="text-decoration: none; font-size: 32px; font-weight: 800; font-family: 'Outfit', sans-serif;">
+                style="text-decoration: none; font-size: 32px; font-weight: 800; font-family: 'Inter', sans-serif;">
                 <span style="color: #8178B1;">Fau</span><span style="color: #000000;">con</span>
             </a>
         </div>
@@ -248,29 +432,75 @@
                     <li><a href="index.html">Accueil</a></li>
                     <li><a href="filieres.html">Filières</a></li>
                     <li><a href="admission.html" class="active">Admission</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">S'inscrire</a></li>
+                    <li><a href="contact.html">Contact</a></li>
                 </ul>
             </nav>
         </div>
-        <div class="header-right-search">
-            <div class="search-box">
-                <input type="text" placeholder="Rechercher...">
-                <button type="button"><i class="fa-solid fa-magnifying-glass"></i></button>
-            </div>
+        <div class="header-right-actions">
+            <a href="login.html" class="btn-login">Connexion</a>
+            <a href="register.html" class="btn-register">S'inscrire</a>
         </div>
     </header>
 
     <main>
-        <section class="admission-hero">
-            <h1>Admission & Inscription</h1>
-            <p>Rejoignez une institution d'excellence et donnez une nouvelle dimension à votre avenir académique et
-                professionnel.</p>
+        <div class="hero-wrapper-full">
+            <section class="adm-hero">
+                <div class="adm-hero-content">
+                    <div class="adm-subtitle">Commence ton parcours</div>
+                    <p class="adm-hero-desc"
+                        style="font-size: 1.25rem; color: #f3f4f6; font-weight: 600; margin-bottom: 25px;">
+                        Rejoins une institution d'excellence et donne une nouvelle dimension à ton avenir académique et
+                        professionnel avec des parcours sur-mesure.
+                    </p>
+                    <a href="#processus" class="btn-adm-hero">Découvrir le processus <i class="fa-solid fa-arrow-right"
+                            style="margin-left: 5px;"></i></a>
+                </div>
+
+                <div class="adm-hero-image-wrapper">
+                    <div class="adm-hero-image">
+                        <!-- Student in uniform, Unsplash -->
+                        <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80"
+                            alt="Étudiantes en uniforme souriantes">
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <section class="info-strip" data-animate="fade-up">
+            <div class="info-box">
+                <h5><i class="fa-solid fa-calendar"></i> Nouvelle Rentrée</h5>
+                <p>06 Octobre 2025</p>
+            </div>
+            <div class="info-box">
+                <h5>Année Académique</h5>
+                <p>2025-2026</p>
+            </div>
+            <div class="info-box">
+                <h5><i class="fa-solid fa-location-dot"></i> Campus</h5>
+                <p>Abomey-Calavi</p>
+            </div>
         </section>
 
-        <section class="admission-content">
+        <section class="admission-content" id="processus">
+            <!-- CTA SECTION WITH TUTOIEMENT -->
+            <div class="cta-section" data-animate="fade-up"
+                style="background-color: transparent; text-align: center; padding: 20px 5% 60px; margin-bottom: 20px;">
+                <h2 style="font-size: 2.2rem; color: #111827; margin-bottom: 20px;">Prêt(e) à nous rejoindre ?</h2>
+                <p style="font-size: 1.15rem; color: #6b7280; line-height: 1.6; max-width: 800px; margin: 0 auto 30px;">
+                    Si tu remplis nos conditions d'admissibilité, la prochaine étape est de choisir la filière dans
+                    laquelle tu souhaites étudier ! Ensuite, il te suffit de t'inscrire en ligne et de suivre les
+                    quelques étapes détaillées ci-dessous pour finaliser ton admission.
+                </p>
+                <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                    <a href="filieres.html" class="btn-register"
+                        style="background-color: #f3f0ff; color: #8178B1; box-shadow: none;">Choisir ma filière</a>
+                    <a href="register.html" class="btn-register">M'inscrire en ligne <i class="fa-solid fa-paper-plane"
+                            style="margin-left: 5px;"></i></a>
+                </div>
+            </div>
+
             <div class="process-title">
-                <h2>Processus d'inscription</h2>
+                <h2>Les étapes pour ton inscription</h2>
             </div>
 
             <div class="admission-grid">
@@ -278,139 +508,108 @@
                 <div class="pieces-list" data-animate="fade-right">
                     <h3><i class="fa-solid fa-file-invoice"></i> Pièces à fournir</h3>
                     <ul>
-                        <li><span class="piece-letter">a</span> Demande d’inscription adressée au DG</li>
-                        <li><span class="piece-letter">b</span> Copie légalisé de l’attestation du Baccalauréat</li>
-                        <li><span class="piece-letter">c</span> Bulletins de note de la dernière année d’étude</li>
-                        <li><span class="piece-letter">d</span> Copie légalisé de l’extrait d’acte de naissance</li>
-                        <li><span class="piece-letter">e</span> Deux (02) photos d’identité</li>
-                        <li><span class="piece-letter">f</span> Curriculum Vitae</li>
+                        <li><span class="piece-letter">a</span> Copie légalisée de ton extrait d’acte de naissance</li>
+                        <li><span class="piece-letter">b</span> Une photo d’identité récente</li>
+                        <li><span class="piece-letter">c</span> Copie légalisée de ton attestation du Baccalauréat</li>
+                        <li><span class="piece-letter">d</span> Tes bulletins de notes de la dernière année d’étude</li>
                     </ul>
                 </div>
 
                 <!-- STEPS TIMELINE -->
                 <div class="timeline-steps">
                     <div class="step-item" data-animate="fade-up">
-                        <div class="step-number">2</div>
+                        <div class="step-number">1</div>
                         <div class="step-text">
                             <h4>Première étape</h4>
-                            <p>Réception des dossiers d’inscription des nouveaux bacheliers et de réinscription des
-                                anciens étudiants au Secrétariat Administratif et Pédagogique</p>
+                            <p>Dépôt de ton dossier d’inscription en ligne ou au Secrétariat de l'école.</p>
+                        </div>
+                    </div>
+
+                    <div class="step-item" data-animate="fade-up">
+                        <div class="step-number">2</div>
+                        <div class="step-text">
+                            <h4>Deuxième étape</h4>
+                            <p>Étude et validation de ton dossier par notre équipe pédagogique.</p>
                         </div>
                     </div>
 
                     <div class="step-item" data-animate="fade-up">
                         <div class="step-number">3</div>
                         <div class="step-text">
-                            <h4>Deuxième étape</h4>
-                            <p>Etude des dossiers des étudiants nouvellement inscrits</p>
+                            <h4>Troisième étape</h4>
+                            <p>Paiement de tes frais de scolarité pour confirmer ta place.</p>
                         </div>
                     </div>
 
                     <div class="step-item" data-animate="fade-up">
                         <div class="step-number">4</div>
                         <div class="step-text">
-                            <h4>Troisième étape</h4>
-                            <p>Paiement des frais de scolarité.</p>
-                        </div>
-                    </div>
-
-                    <div class="step-item" data-animate="fade-up">
-                        <div class="step-number">5</div>
-                        <div class="step-text">
                             <h4>Quatrième étape</h4>
-                            <p>Immatriculation des étudiants.</p>
+                            <p>Obtention de ton immatriculation et bienvenue sur le campus !</p>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- ANNEE ACADEMIQUE STRIP -->
-            <div class="info-strip" data-animate="fade-up">
-                <div class="info-box">
-                    <h5>Année Académique</h5>
-                    <p>2022-2023</p>
-                </div>
-                <div class="info-box">
-                    <h5>Date de rentrée</h5>
-                    <p>03 Octobre 2021</p>
-                </div>
-                <div class="info-box">
-                    <h5>Localisation</h5>
-                    <p>Abomey-Calavi, derrière la Pharmacie Château d’eau</p>
-                </div>
-            </div>
-
-            <!-- CTA SECTION -->
-            <div class="cta-section" data-animate="fade-up">
-                <h2>S'inscrire en ligne</h2>
-                <p>Cliquez sur le bouton ci-dessous ensuite remplissez étape par étape votre candidature sur notre
-                    espace dédié.</p>
-                <a href="#" class="btn-register">Inscription en ligne <i class="fa-solid fa-paper-plane"></i></a>
             </div>
         </section>
     </main>
 
     <!-- FOOTER -->
     <footer class="site-footer">
-        <div class="footer-top">
-            <div class="footer-col">
-                <h4>Entreprise</h4>
-                <ul>
-                    <li><a href="index.html">À Propos</a></li>
-                    <li><a href="#">FAQ</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Explorer</h4>
-                <ul>
-                    <li><a href="#">Actualités</a></li>
-                    <li><a href="#">Nos Campus</a></li>
-                    <li><a href="filieres.html">Formations</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Liens Rapides</h4>
-                <ul>
-                    <li><a href="index.html">Accueil</a></li>
-                    <li><a href="admission.html">Admissions</a></li>
-                    <li><a href="#">Nous Contacter</a></li>
-                </ul>
-            </div>
-            <div class="footer-col contact-col">
-                <h4>Contact</h4>
-                <address>
-                    Avenue des Universités, Cotonou, Bénin<br>
-                    <br>
-                    <i class="fa-solid fa-phone"></i> +229 00 55 59 27<br>
-                    <i class="fa-solid fa-envelope"></i> contact@esfbenin.net
-                </address>
-            </div>
-        </div>
+        <div class="footer-container-exact">
+            <div class="df-top-grid">
+                <!-- Col 1: Brand & Desc -->
+                <div class="df-col">
+                    <h3 class="df-logo-title">ESF Le Faucon</h3>
+                    <p class="df-desc">Nous croyons en un avenir où l'éducation transforme des vies et forme des leaders
+                        d'excellence pour affronter les défis de demain.</p>
+                    <div class="df-socials">
+                        <a href="https://web.facebook.com/ESFAUCON/?_rdc=2&_rdr#" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="https://www.youtube.com/channel/UC0cuSUEAyzwwTOTxsKzkbhA" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="https://www.tiktok.com/@eslefaucon" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
 
-        <div class="footer-card">
-            <div class="footer-card-left">
-                <h3 class="footer-logo">ESF Le Faucon</h3>
-                <p>Nous croyons en un avenir où l'éducation transforme des vies et forme des leaders d'excellence pour
-                    affronter les défis de demain.</p>
-                <div class="footer-legal">
-                    <a href="#">Conditions d'utilisation</a>
-                    <a href="#">Politique de confidentialité</a>
-                    <a href="#">Fonctionnement du site</a>
+                <!-- Col 2: Explorer -->
+                <div class="df-col">
+                    <h4 class="df-col-title">Explorer</h4>
+                    <ul class="df-links">
+                        <li><a href="actualites.html">Actualités</a></li>
+                        <li><a href="campus.html">Nos Campus</a></li>
+                        <li><a href="filieres.html">Formations</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Entreprise -->
+                <div class="df-col">
+                    <h4 class="df-col-title">Entreprise</h4>
+                    <ul class="df-links">
+                        <li><a href="a-propos.html">À Propos</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="admission.html">Admissions</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Newsletter -->
+                <div class="df-col df-newsletter-col">
+                    <h4 class="df-col-title">Abonnez-vous</h4>
+                    <p class="df-desc">Abonnez-vous à notre newsletter pour les dernières nouvelles.</p>
+                    <form class="df-newsletter-form">
+                        <input type="email" placeholder="Entrez votre email" required>
+                        <button type="submit" class="btn-df-submit">S'abonner</button>
+                    </form>
                 </div>
             </div>
-            <div class="footer-card-right">
-                <h4>Abonnez-vous à notre Newsletter</h4>
-                <form class="newsletter-form">
-                    <input type="email" placeholder="Entrez votre Email" required>
-                    <button type="submit" class="btn btn-primary"
-                        style="background-color: #8178B1; border: none; padding: 12px 25px; border-radius: 50px; color: white; cursor: pointer;">S'abonner</button>
-                </form>
-            </div>
-        </div>
 
-        <div class="footer-bottom">
-            <p>&copy; 2026 - Tous droits réservés - ESF Bénin.</p>
+            <div class="df-bottom-bar">
+                <div class="df-copyright">
+                    &copy; 2026 ESF Le Faucon. Tous droits réservés.
+                </div>
+                <div class="df-legal-links">
+                    <a href="politique-confidentialite.html">Politique de confidentialité</a>
+                    <a href="fonctionnement.html">Fonctionnement du site</a>
+                </div>
+            </div>
         </div>
     </footer>
 

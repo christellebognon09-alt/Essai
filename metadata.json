@@ -1,0 +1,5 @@
+{
+  "name": "Faucon Enrollment",
+  "description": "A student enrollment dashboard for Faucon, featuring document uploads and status tracking with a soft, modern aesthetic.",
+  "requestFramePermissions": []
+}

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S'inscrire - ESF Bénin</title>
+    <link rel="preconnect" href="https://images.unsplash.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="image" href="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=600&q=60">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="auth-page">
+    <div class="auth-container">
+        <!-- Left Side: Illustration & Branding -->
+        <div class="auth-banner">
+            <div class="auth-banner-bg">
+                <div class="banner-slide active">
+                    <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070&auto=format&fit=crop"
+                        alt="Students Collaboration" loading="eager" fetchpriority="high" decoding="async">
+                    <div class="auth-overlay"></div>
+                    <div class="auth-banner-footer">
+                        <h1>Lancez votre carrière dès aujourd'hui !</h1>
+                    </div>
+                </div>
+                <div class="banner-slide">
+                    <img src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=2070&auto=format&fit=crop"
+                        alt="Learning" loading="eager" decoding="async">
+                    <div class="auth-overlay"></div>
+                    <div class="auth-banner-footer">
+                        <h1>Un accès direct à l'excellence.</h1>
+                    </div>
+                </div>
+                <div class="banner-slide">
+                    <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=2070&auto=format&fit=crop"
+                        alt="Success" loading="eager" decoding="async">
+                    <div class="auth-overlay"></div>
+                    <div class="auth-banner-footer">
+                        <h1>Votre réussite est notre priorité.</h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="auth-banner-header">
+                <a href="index.html" class="auth-logo">
+                    <span style="color: #ffffff;">Fau</span><span style="color: #8178B1;">con</span>
+                </a>
+                <a href="index.html" class="back-link">Retour au site <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+            <div class="auth-banner-footer-dots">
+                <div class="banner-dots">
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Register Form -->
+        <div class="auth-form-wrapper">
+            <div class="form-inner">
+                <div class="form-header">
+                    <h2>Créer un compte</h2>
+                </div>
+
+                <div id="register-error" class="error-msg" style="display: none; background-color: #FEF2F2; color: #DC2626; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 600; text-align: center; margin-bottom: 20px; border: 1px solid #FEE2E2;">
+                    Erreur lors de l'inscription
+                </div>
+
+                <form action="dashboard.html" class="auth-form" id="registerForm" novalidate>
+                    <div class="form-row-grid">
+                        <div class="form-group">
+                            <label for="firstname">Prénom</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="firstname" placeholder="Prénom" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastname">Nom</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="lastname" placeholder="Nom" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Adresse E-mail</label>
+                        <div class="input-wrapper">
+                            <input type="email" id="email" placeholder="Adresse e-mail" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Mot de passe</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="password" placeholder="Saisir votre mot de passe" required>
+                            <button type="button" class="toggle-pass"><i class="fa-solid fa-eye"></i></button>
+                        </div>
+                    </div>
+
+                    <label class="checkbox-container terms">
+                        <input type="checkbox" required>
+                        <span class="checkmark"></span>
+                        <span class="terms-text" style="font-size: 0.85rem; color: #4B5563;">J'accepte les <a
+                                href="#">Conditions & Politiques</a></span>
+                    </label>
+
+                    <button type="submit" class="auth-submit">Créer le compte</button>
+
+                    <div class="auth-divider">
+                        <span
+                            style="position: relative; background: #ffffff; padding: 0 15px; color: #6B7280; font-size: 0.85rem; font-weight: 500;">ou
+                            s'inscrire avec</span>
+                    </div>
+
+                    <div class="social-auth row">
+                        <button type="button" class="social-btn" style="width: 100%; grid-column: span 2;" onclick="window.location.href='/auth/google'"><img
+                                src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" alt="Google">
+                            Google</button>
+                    </div>
+                </form>
+
+                <p class="auth-footer">
+                    Déjà un compte ? <a href="login.html">Se connecter</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="effects.js"></script>
+    <script>
+        // Password Toggle
+        document.querySelector('.toggle-pass')?.addEventListener('click', function () {
+            const input = document.getElementById('password');
+            const icon = this.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        });
+
+        // Form Validation
+        const form = document.querySelector('.auth-form');
+        const passwordInput = document.getElementById('password');
+        const emailInput = document.getElementById('email');
+        const firstnameInput = document.getElementById('firstname');
+        const lastnameInput = document.getElementById('lastname');
+
+        // Create error message element
+        const errorMsg = document.createElement('div');
+        errorMsg.className = 'password-error';
+        errorMsg.style.color = '#EF4444';
+        errorMsg.style.fontSize = '0.75rem';
+        errorMsg.style.marginTop = '0.5rem';
+        errorMsg.style.fontWeight = '500';
+        errorMsg.style.display = 'none';
+        passwordInput.parentNode.parentNode.appendChild(errorMsg);
+
+        const validatePassword = () => {
+            const password = passwordInput.value;
+            const firstname = firstnameInput.value.toLowerCase();
+            const lastname = lastnameInput.value.toLowerCase();
+
+            let message = "";
+            const hasUppercase = /[A-Z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+            const containsPersonalInfo = (firstname && password.toLowerCase().includes(firstname)) ||
+                (lastname && password.toLowerCase().includes(lastname));
+
+            if (password.length > 0) {
+                if (password.length < 8) {
+                    message = "Le mot de passe doit contenir au moins 8 caractères.";
+                } else if (!hasUppercase && !hasNumber) {
+                    message = "Le mot de passe doit contenir une majuscule ou un chiffre.";
+                } else if (!hasSpecial) {
+                    message = "Veuillez ajouter un caractère spécial.";
+                } else if (containsPersonalInfo) {
+                    message = "Le mot de passe ne doit pas contenir d'informations personnelles (nom ou prénom).";
+                }
+            }
+
+            if (message) {
+                errorMsg.textContent = message;
+                errorMsg.style.display = 'block';
+                passwordInput.style.borderColor = '#EF4444';
+                return false;
+            } else if (password.length > 0) {
+                errorMsg.style.display = 'none';
+                passwordInput.style.borderColor = '#10B981';
+                return true;
+            } else {
+                errorMsg.style.display = 'none';
+                passwordInput.style.borderColor = '';
+                return false;
+            }
+        };
+
+        // Create email error message element
+        const emailErrorMsg = document.createElement('div');
+        emailErrorMsg.className = 'email-error';
+        emailErrorMsg.style.color = '#EF4444';
+        emailErrorMsg.style.fontSize = '0.75rem';
+        emailErrorMsg.style.marginTop = '0.25rem';
+        emailErrorMsg.style.fontWeight = '500';
+        emailErrorMsg.style.display = 'none';
+        emailInput.parentNode.appendChild(emailErrorMsg);
+
+        const validateEmail = () => {
+            const email = emailInput.value;
+            const hasAt = email.includes('@');
+
+            if (email.length > 0) {
+                if (!hasAt) {
+                    emailErrorMsg.textContent = "Veuillez entrer une adresse email valide";
+                    emailErrorMsg.style.display = 'block';
+                    emailInput.style.borderColor = '#EF4444';
+                    return false;
+                } else {
+                    emailErrorMsg.style.display = 'none';
+                    emailInput.style.borderColor = '#10B981';
+                    return true;
+                }
+            } else {
+                emailErrorMsg.style.display = 'none';
+                emailInput.style.borderColor = '';
+                return false;
+            }
+        };
+
+        passwordInput.addEventListener('input', validatePassword);
+        emailInput.addEventListener('input', validateEmail);
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const isEmailValid = validateEmail();
+            const isPasswordValid = validatePassword();
+
+            if (!isEmailValid) {
+                emailInput.focus();
+                if (emailInput.value === "") {
+                    emailErrorMsg.textContent = "Veuillez entrer une adresse email valide";
+                    emailErrorMsg.style.display = 'block';
+                    emailInput.style.borderColor = '#EF4444';
+                }
+                return;
+            } 
+            
+            if (!isPasswordValid) {
+                passwordInput.focus();
+                return;
+            }
+
+            // Backend integration
+            const formData = {
+                firstname: firstnameInput.value,
+                lastname: lastnameInput.value,
+                email: emailInput.value,
+                password: passwordInput.value
+            };
+
+            const submitBtn = form.querySelector('.auth-submit');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Création...";
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    window.location.href = 'dashboard.html';
+                } else {
+                    const errorContainer = document.getElementById('register-error');
+                    errorContainer.textContent = data.message || "Erreur lors de l'inscription";
+                    errorContainer.style.display = 'block';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            } catch (error) {
+                const errorContainer = document.getElementById('register-error');
+                errorContainer.textContent = "Erreur de connexion au serveur";
+                errorContainer.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        });
+
+        // Slideshow
+        const slides = document.querySelectorAll('.banner-slide');
+        const dots = document.querySelectorAll('.dot');
+        let currentSlide = 0;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('active');
+            currentSlide = (n + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+        }
+
+        setInterval(() => {
+            showSlide(currentSlide + 1);
+        }, 5000);
+    </script>
+</body>
+
+</html>

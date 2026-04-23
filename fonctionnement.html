@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fonctionnement du site - ESF Le Faucon</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .legal-content {
+            padding: 130px 5% 60px;
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8;
+            color: #374151;
+            position: relative;
+        }
+
+        .legal-content h1 {
+            font-size: 3rem;
+            color: #111827;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .legal-section {
+            margin-bottom: 40px;
+        }
+
+        .legal-section h2 {
+            font-size: 1.5rem;
+            color: #8178B1;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .legal-section p {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header home-header">
+        <div class="logo">
+            <a href="index.html"
+                style="text-decoration: none; font-size: 32px; font-weight: 800; font-family: 'Inter', sans-serif;">
+                <span style="color: #8178B1;">Fau</span><span style="color: #000000;">con</span>
+            </a>
+        </div>
+        <div class="header-center">
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="filieres.html">Filières</a></li>
+                    <li><a href="admission.html">Admission</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="header-right-actions">
+            <a href="login.html" class="btn-login">Connexion</a>
+            <a href="register.html" class="btn-register">S'inscrire</a>
+        </div>
+    </header>
+
+    <main class="legal-content">
+        <h1>Fonctionnement du site</h1>
+
+        <section class="legal-section">
+            <h2>1. Architecture technique</h2>
+            <p>Le site de l'ESF Le Faucon est conçu comme une application web hybride utilisant :</p>
+            <ul>
+                <li><strong>Interface (Frontend)</strong> : HTML5, CSS3 progressif et JavaScript (ES6+).</li>
+                <li><strong>Serveur (Backend)</strong> : Un environnement Node.js avec le framework Express pour la gestion des sessions et des API.</li>
+                <li><strong>Base de données</strong> : MySQL pour le stockage sécurisé des informations académiques et administratives.</li>
+            </ul>
+        </section>
+
+        <section class="legal-section">
+            <h2>2. Compatibilité</h2>
+            <p>Pour une expérience optimale, nous recommandons l'utilisation des dernières versions des navigateurs suivants :</p>
+            <ul>
+                <li>Google Chrome</li>
+                <li>Mozilla Firefox</li>
+                <li>Safari</li>
+                <li>Microsoft Edge</li>
+            </ul>
+        </section>
+
+        <section class="legal-section">
+            <h2>3. Cookies et Sessions</h2>
+            <p>Notre site utilise des cookies techniques strictement nécessaires au fonctionnement de l'espace membre (Espace Étudiant, Administration). Ces cookies permettent de maintenir votre session connectée de manière sécurisée. Aucun cookie publicitaire de tiers n'est utilisé sur ce site.</p>
+        </section>
+
+        <section class="legal-section">
+            <h2>4. Crédits</h2>
+            <p>Design et développement réalisés par le pôle informatique de l'École Supérieure Le Faucon. Tous les visuels, sauf mention contraire, sont la propriété de l'école ou utilisés sous licence Creative Commons.</p>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-container-exact">
+            <div class="df-top-grid">
+                <div class="df-col">
+                    <h3 class="df-logo-title">ESF Le Faucon</h3>
+                    <p class="df-desc">Nous croyons en un avenir où l'éducation transforme des vies et forme des leaders
+                        d'excellence pour affronter les défis de demain.</p>
+                    <div class="df-socials">
+                        <a href="https://web.facebook.com/ESFAUCON/?_rdc=2&_rdr#" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="https://www.youtube.com/channel/UC0cuSUEAyzwwTOTxsKzkbhA" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="https://www.tiktok.com/@eslefaucon" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
+
+                <div class="df-col">
+                    <h4 class="df-col-title">Explorer</h4>
+                    <ul class="df-links">
+                        <li><a href="actualites.html">Actualités</a></li>
+                        <li><a href="campus.html">Nos Campus</a></li>
+                        <li><a href="filieres.html">Formations</a></li>
+                    </ul>
+                </div>
+
+                <div class="df-col">
+                    <h4 class="df-col-title">Entreprise</h4>
+                    <ul class="df-links">
+                        <li><a href="a-propos.html">À Propos</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="admission.html">Admissions</a></li>
+                    </ul>
+                </div>
+
+                <div class="df-col df-newsletter-col">
+                    <h4 class="df-col-title">Abonnez-vous</h4>
+                    <p class="df-desc">Abonnez-vous à notre newsletter pour les dernières nouvelles.</p>
+                    <form class="df-newsletter-form">
+                        <input type="email" placeholder="Entrez votre email" required>
+                        <button type="submit" class="btn-df-submit">S'abonner</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="df-bottom-bar">
+                <div class="df-copyright">
+                    &copy; 2026 ESF Le Faucon. Tous droits réservés.
+                </div>
+                <div class="df-legal-links">
+                    <a href="politique-confidentialite.html">Politique de confidentialité</a>
+                    <a href="fonctionnement.html">Fonctionnement du site</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="effects.js"></script>
+</body>
+
+</html>

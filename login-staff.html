@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion Personnel - ESF Bénin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --staff-primary: #8178BB;
+            --staff-bg: #f3f4f6;
+        }
+
+        .auth-banner {
+            background: linear-gradient(135deg, #8178BB 0%, #4c4477 100%);
+        }
+
+        .role-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .role-option {
+            border: 2px solid #e5e7eb;
+            padding: 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .role-option i {
+            display: block;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: #9ca3af;
+        }
+
+        .role-option span {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+        }
+
+        .role-option:hover {
+            border-color: var(--staff-primary);
+            background: #f5f3ff;
+        }
+
+        .role-option.active {
+            border-color: var(--staff-primary);
+            background: #f5f3ff;
+        }
+
+        .role-option.active i, .role-option.active span {
+            color: var(--staff-primary);
+        }
+
+        /* --- Forgot Password Modal --- */
+        .modal-forgot {
+            position: fixed;
+            inset: 0;
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-forgot.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: white;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+
+        .modal-card h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 8px;
+            letter-spacing: -0.025em;
+        }
+
+        .modal-card p {
+            color: #64748b;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        .modal-step {
+            display: none;
+        }
+
+        .modal-step.active {
+            display: block;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 1.25rem;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: #1e293b;
+        }
+
+        .verification-inputs {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .verification-inputs input {
+            width: 45px;
+            height: 55px;
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 700;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .verification-inputs input:focus {
+            border-color: var(--staff-primary);
+        }
+
+        .forgot-submit {
+            width: 100%;
+            background: var(--staff-primary);
+            color: white;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.875rem;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .forgot-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(129, 120, 187, 0.3);
+        }
+
+        .auth-submit {
+            background: var(--staff-primary);
+        }
+
+        .auth-submit:hover {
+            background: #6d64a3;
+        }
+    </style>
+</head>
+
+<body class="auth-page">
+    <div class="auth-container">
+        <!-- Left Side: Illustration & Branding -->
+        <div class="auth-banner">
+            <div class="auth-banner-bg">
+                <div class="banner-slide active">
+                    <img src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2070&auto=format&fit=crop"
+                        alt="Management">
+                    <div class="auth-overlay"></div>
+                    <div class="auth-banner-footer">
+                        <h1>Espace Personnel & Administratif</h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="auth-banner-header">
+                <a href="index.html" class="auth-logo">
+                    <span style="color: #ffffff;">Fau</span><span style="color: #8178B1;">con</span>
+                </a>
+                <a href="index.html" class="back-link">Retour au site <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </div>
+
+        <!-- Right Side: Login Form -->
+        <div class="auth-form-wrapper">
+            <div class="form-inner">
+                <div class="form-header">
+                    <h2>Connexion Administration</h2>
+                    <p style="color: #6B7280; font-size: 0.9rem; margin-top: 5px;">Accédez à votre poste de travail</p>
+                </div>
+
+                <form id="staffLoginForm" class="auth-form">
+                    <div class="form-group">
+                        <label>Choisissez votre rôle</label>
+                        <div class="role-selector">
+                            <div class="role-option active" data-role="secretaire">
+                                <i class="fa-solid fa-user-tie"></i>
+                                <span>Secrétaire</span>
+                            </div>
+                            <div class="role-option" data-role="comptable">
+                                <i class="fa-solid fa-calculator"></i>
+                                <span>Comptable</span>
+                            </div>
+                            <div class="role-option" data-role="admin">
+                                <i class="fa-solid fa-user-shield"></i>
+                                <span>Admin</span>
+                            </div>
+                            <div class="role-option" data-role="professeur">
+                                <i class="fa-solid fa-chalkboard-user"></i>
+                                <span>Professeur</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Identifiant Professionnel</label>
+                        <div class="input-wrapper">
+                            <input type="email" id="email" placeholder="Email" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Mot de passe</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="password" placeholder="••••••••" required>
+                            <button type="button" class="toggle-pass"><i class="fa-solid fa-eye"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="form-utils">
+                        <a href="#" class="forgot-link" id="openForgot">Mot de passe oublié ?</a>
+                    </div>
+
+                    <button type="submit" class="auth-submit">Accéder au Dashboard</button>
+                </form>
+
+                <p class="auth-footer">
+                    Accès réservé au personnel autorisé de l'école.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal Structure -->
+    <div id="forgotModal" class="modal-forgot">
+        <div class="modal-card">
+            <i class="fa-solid fa-xmark close-modal" id="closeForgot"></i>
+            
+            <!-- Step 1: Email Input -->
+            <div id="step1" class="modal-step active">
+                <h3>Mot de passe oublié ?</h3>
+                <p>Pas d'inquiétude. Entrez votre adresse email professionnelle pour recevoir un code d'identification.</p>
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <input type="email" id="forgotEmail" placeholder="votre.email@faucon.bj" required>
+                    </div>
+                </div>
+                <button class="forgot-submit" id="toStep2">Recevoir le code</button>
+            </div>
+
+            <!-- Step 2: Verification Code -->
+            <div id="step2" class="modal-step">
+                <h3>Vérifiez votre email</h3>
+                <p>Nous venons d'envoyer un code de sécurité à 6 chiffres sur votre boîte mail.</p>
+                <div class="verification-inputs">
+                    <input type="text" maxlength="1">
+                    <input type="text" maxlength="1">
+                    <input type="text" maxlength="1">
+                    <input type="text" maxlength="1">
+                    <input type="text" maxlength="1">
+                    <input type="text" maxlength="1">
+                </div>
+                <button class="forgot-submit" id="toStep3">Vérifier le code</button>
+                <p style="text-align: center; margin-top: 16px; margin-bottom: 0;">
+                    <a href="#" style="color: var(--staff-primary); font-weight: 700; text-decoration: none;">Renvoyer le code</a>
+                </p>
+            </div>
+
+            <!-- Step 3: New Password -->
+            <div id="step3" class="modal-step">
+                <h3>Nouveau mot de passe</h3>
+                <p>Créez un mot de passe fort pour protéger l'accès à votre compte.</p>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <div class="input-wrapper">
+                        <input type="password" placeholder="Nouveau mot de passe" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-wrapper">
+                        <input type="password" placeholder="Confirmer le mot de passe" required>
+                    </div>
+                </div>
+                <button class="forgot-submit" id="resetFinal">Réinitialiser le mot de passe</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Role Selection
+        const roles = document.querySelectorAll('.role-option');
+        let selectedRole = 'secretaire';
+
+        roles.forEach(role => {
+            role.addEventListener('click', () => {
+                roles.forEach(r => r.classList.remove('active'));
+                role.classList.add('active');
+                selectedRole = role.dataset.role;
+            });
+        });
+
+        // Password Toggle
+        document.querySelector('.toggle-pass')?.addEventListener('click', function () {
+            const input = document.getElementById('password');
+            const icon = this.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        });
+
+        // Form Submission
+        document.getElementById('staffLoginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const submitBtn = this.querySelector('.auth-submit');
+            const originalText = submitBtn.textContent;
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Authentification...";
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    const role = data.user.role;
+                    
+                    // Map roles to their respective pages
+                    const routing = {
+                        'Secrétaire': 'dashboard_secretaire.html',
+                        'Comptable': 'dashboard_comptable.html',
+                        'Admin': 'dashboard_admin.html',
+                        'Surveillant': 'dashboard_professeur.html', // Surveillant maps to professeur dashboard for now
+                        'Professeur': 'dashboard_professeur.html'
+                    };
+
+                    const targetPage = routing[role];
+                    if (targetPage) {
+                        window.location.href = targetPage;
+                    } else {
+                        alert("Accès refusé : Rôle non autorisé pour cette interface.");
+                    }
+                } else {
+                    alert(data.message || "Identifiants incorrects");
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Erreur de connexion au serveur");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        });
+
+        // Forgot Password Logic
+        const forgotModal = document.getElementById('forgotModal');
+        const openForgot = document.getElementById('openForgot');
+        const closeForgot = document.getElementById('closeForgot');
+        const steps = document.querySelectorAll('.modal-step');
+
+        openForgot.addEventListener('click', (e) => {
+            e.preventDefault();
+            forgotModal.classList.add('active');
+        });
+
+        closeForgot.addEventListener('click', () => {
+            forgotModal.classList.remove('active');
+            // Reset to step 1 when closing
+            steps.forEach(s => s.classList.remove('active'));
+            document.getElementById('step1').classList.add('active');
+        });
+
+        document.getElementById('toStep2').addEventListener('click', () => {
+            const email = document.getElementById('forgotEmail').value;
+            if(email) {
+                document.getElementById('step1').classList.remove('active');
+                document.getElementById('step2').classList.add('active');
+            }
+        });
+
+        document.getElementById('toStep3').addEventListener('click', () => {
+            document.getElementById('step2').classList.remove('active');
+            document.getElementById('step3').classList.add('active');
+        });
+
+        document.getElementById('resetFinal').addEventListener('click', () => {
+            alert('Votre mot de passe a été réinitialisé avec succès !');
+            forgotModal.classList.remove('active');
+        });
+
+        // Auto focus for verification inputs
+        const verifyInputs = document.querySelectorAll('.verification-inputs input');
+        verifyInputs.forEach((input, index) => {
+            input.addEventListener('input', () => {
+                if(input.value && index < verifyInputs.length - 1) {
+                    verifyInputs[index + 1].focus();
+                }
+            });
+            input.addEventListener('keydown', (e) => {
+                if(e.key === 'Backspace' && !input.value && index > 0) {
+                    verifyInputs[index - 1].focus();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualités - ESF Le Faucon</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .page-header {
+            background-color: #8178B1;
+            padding: 130px 5% 60px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .news-section {
+            padding: 80px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+
+        .news-card {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 1px solid #f3f4f6;
+        }
+
+        .news-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .news-img {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+        }
+
+        .news-body {
+            padding: 30px;
+        }
+
+        .news-tag {
+            background: #f3f0ff;
+            color: #8178B1;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .news-date {
+            color: #9CA3AF;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .news-body h3 {
+            font-size: 1.5rem;
+            color: #111827;
+            margin-bottom: 15px;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .news-body p {
+            color: #6B7280;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .btn-read-more {
+            color: #8178B1;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: gap 0.3s ease;
+        }
+
+        .btn-read-more:hover {
+            gap: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header home-header">
+        <div class="logo">
+            <a href="index.html"
+                style="text-decoration: none; font-size: 32px; font-weight: 800; font-family: 'Inter', sans-serif;">
+                <span style="color: #8178B1;">Fau</span><span style="color: #000000;">con</span>
+            </a>
+        </div>
+        <div class="header-center">
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="filieres.html">Filières</a></li>
+                    <li><a href="admission.html">Admission</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="header-right-actions">
+            <a href="login.html" class="btn-login">Connexion</a>
+            <a href="register.html" class="btn-register">S'inscrire</a>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <h1>Actualités & Événements</h1>
+        <p>Suivez les moments forts de la vie à l'École Supérieure Le Faucon.</p>
+    </div>
+
+    <main class="news-section">
+        <div class="news-grid">
+            <!-- Article 1 -->
+            <div class="news-card">
+                <img src="https://images.unsplash.com/photo-1540317580384-e5d43616b9aa?auto=format&fit=crop&w=600&q=80" alt="Diplômés" class="news-img">
+                <div class="news-body">
+                    <span class="news-tag">Événement</span>
+                    <span class="news-date">15 Mai 2025</span>
+                    <h3>Cérémonie de remise de diplômes Promotion 2024</h3>
+                    <p>Une journée mémorable célébrant le succès de nos nouveaux diplômés en Génie Civil et Management.</p>
+                    <a href="#" class="btn-read-more">Lire la suite <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <!-- Article 2 -->
+            <div class="news-card">
+                <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=600&q=80" alt="Séminaire" class="news-img">
+                <div class="news-body">
+                    <span class="news-tag">Académique</span>
+                    <span class="news-date">10 Avril 2025</span>
+                    <h3>Séminaire sur l'Intelligence Artificielle</h3>
+                    <p>Nos étudiants en Génie Informatique ont participé à un workshop intensif sur les enjeux de l'IA.</p>
+                    <a href="#" class="btn-read-more">Lire la suite <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <!-- Article 3 -->
+            <div class="news-card">
+                <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=600&q=80" alt="Rentrée" class="news-img">
+                <div class="news-body">
+                    <span class="news-tag">Admission</span>
+                    <span class="news-date">01 Mars 2025</span>
+                    <h3>Ouverture des pré-inscriptions 2025-2026</h3>
+                    <p>Il est temps de préparer votre avenir ! Les dossiers pour la prochaine rentrée sont désormais acceptés.</p>
+                    <a href="#" class="btn-read-more">Lire la suite <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-container-exact">
+            <div class="df-top-grid">
+                <div class="df-col">
+                    <h3 class="df-logo-title">ESF Le Faucon</h3>
+                    <p class="df-desc">Nous croyons en un avenir où l'éducation transforme des vies et forme des leaders
+                        d'excellence pour affronter les défis de demain.</p>
+                    <div class="df-socials">
+                        <a href="https://web.facebook.com/ESFAUCON/?_rdc=2&_rdr#" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="https://www.youtube.com/channel/UC0cuSUEAyzwwTOTxsKzkbhA" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="https://www.tiktok.com/@eslefaucon" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
+
+                <div class="df-col">
+                    <h4 class="df-col-title">Explorer</h4>
+                    <ul class="df-links">
+                        <li><a href="actualites.html">Actualités</a></li>
+                        <li><a href="campus.html">Nos Campus</a></li>
+                        <li><a href="filieres.html">Formations</a></li>
+                    </ul>
+                </div>
+
+                <div class="df-col">
+                    <h4 class="df-col-title">Entreprise</h4>
+                    <ul class="df-links">
+                        <li><a href="a-propos.html">À Propos</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="admission.html">Admissions</a></li>
+                    </ul>
+                </div>
+
+                <div class="df-col df-newsletter-col">
+                    <h4 class="df-col-title">Abonnez-vous</h4>
+                    <p class="df-desc">Abonnez-vous à notre newsletter pour les dernières nouvelles.</p>
+                    <form class="df-newsletter-form">
+                        <input type="email" placeholder="Entrez votre email" required>
+                        <button type="submit" class="btn-df-submit">S'abonner</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="df-bottom-bar">
+                <div class="df-copyright">
+                    &copy; 2026 ESF Le Faucon. Tous droits réservés.
+                </div>
+                <div class="df-legal-links">
+                    <a href="politique-confidentialite.html">Politique de confidentialité</a>
+                    <a href="fonctionnement.html">Fonctionnement du site</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="effects.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const newsGrid = document.querySelector('.news-grid');
+            
+            async function loadNews() {
+                try {
+                    const response = await fetch('/api/news');
+                    const news = await response.json();
+                    
+                    if (news && news.length > 0) {
+                        // Optionnellement vider les placeholders statiques
+                        newsGrid.innerHTML = ''; 
+                        
+                        news.forEach(article => {
+                            const card = document.createElement('div');
+                            card.className = 'news-card';
+                            
+                            const date = new Date(article.date_posted).toLocaleDateString('fr-FR', {
+                                day: 'numeric',
+                                month: 'long',
+                                year: 'numeric'
+                            });
+                            
+                            card.innerHTML = `
+                                <img src="${article.image_url || 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=600&q=80'}" alt="${article.title}" class="news-img">
+                                <div class="news-body">
+                                    <span class="news-tag">${article.category || 'Événement'}</span>
+                                    <span class="news-date">${date}</span>
+                                    <h3>${article.title}</h3>
+                                    <p>${article.content.substring(0, 120)}${article.content.length > 120 ? '...' : ''}</p>
+                                    <a href="actualite-detail.html?id=${article.id}" class="btn-read-more">Lire la suite <i class="fa-solid fa-arrow-right"></i></a>
+                                </div>
+                            `;
+                            newsGrid.appendChild(card);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Erreur lors du chargement des actualités:', error);
+                }
+            }
+            
+            loadNews();
+        });
+    </script>
+</body>
+
+</html>

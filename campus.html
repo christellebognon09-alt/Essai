@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nos Campus - ESF Le Faucon</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .page-header {
+            background-color: #f3f0ff;
+            padding: 130px 5% 60px;
+            text-align: center;
+            color: #111827;
+            position: relative;
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .campus-section {
+            padding: 80px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .campus-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 80px;
+        }
+
+        .campus-item {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .campus-item:nth-child(even) {
+            direction: rtl;
+        }
+
+        .campus-item:nth-child(even) .campus-text {
+            direction: ltr;
+        }
+
+        .campus-img {
+            position: relative;
+        }
+
+        .campus-img img {
+            width: 100%;
+            border-radius: 40px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .campus-text h2 {
+            font-size: 2.5rem;
+            color: #111827;
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+
+        .campus-text p {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: #4B5563;
+            margin-bottom: 30px;
+        }
+
+        .facilities-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .facilities-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .facilities-list i {
+            color: #8178B1;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 900px) {
+            .campus-item {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .campus-item:nth-child(even) {
+                direction: ltr;
+            }
+            .facilities-list {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header home-header">
+        <div class="logo">
+            <a href="index.html"
+                style="text-decoration: none; font-size: 32px; font-weight: 800; font-family: 'Inter', sans-serif;">
+                <span style="color: #8178B1;">Fau</span><span style="color: #000000;">con</span>
+            </a>
+        </div>
+        <div class="header-center">
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="filieres.html">Filières</a></li>
+                    <li><a href="admission.html">Admission</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="header-right-actions">
+            <a href="login.html" class="btn-login">Connexion</a>
+            <a href="register.html" class="btn-register">S'inscrire</a>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <h1>Nos Campus</h1>
+        <p>Découvrez nos infrastructures modernes pensées pour votre épanouissement.</p>
+    </div>
+
+    <main class="campus-section">
+        <div class="campus-grid">
+            <!-- Campus Calavi -->
+            <div class="campus-item">
+                <div class="campus-img">
+                    <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=800&q=80" alt="Campus Calavi">
+                </div>
+                <div class="campus-text">
+                    <h2>Campus Abomey-Calavi</h2>
+                    <p>Idéalement situé, notre campus principal offre un environnement calme et propice aux études. Avec des salles climatisées et des espaces verts, c'est le pôle central de la vie académique.</p>
+                    <ul class="facilities-list">
+                        <li><i class="fa-solid fa-wifi"></i> WiFi Haut Débit</li>
+                        <li><i class="fa-solid fa-flask"></i> Labos Tech</li>
+                        <li><i class="fa-solid fa-book"></i> Grande Bibliothèque</li>
+                        <li><i class="fa-solid fa-mug-hot"></i> Cafétéria</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Infrastructures -->
+            <div class="campus-item">
+                <div class="campus-img">
+                    <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=800&q=80" alt="Salles de cours">
+                </div>
+                <div class="campus-text">
+                    <h2>Salles de Cours & Ateliers</h2>
+                    <p>Nous investissons massivement dans le confort de nos étudiants. Nos salles sont équipées de vidéoprojecteurs et nos ateliers de génie civil disposent de tout le matériel nécessaire aux travaux pratiques.</p>
+                    <ul class="facilities-list">
+                        <li><i class="fa-solid fa-desktop"></i> Parc Informatique</li>
+                        <li><i class="fa-solid fa-building"></i> Labo Génie Civil</li>
+                        <li><i class="fa-solid fa-snowflake"></i> Climatisation</li>
+                        <li><i class="fa-solid fa-microchip"></i> Labo Électronique</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-container-exact">
+            <div class="df-top-grid">
+                <div class="df-col">
+                    <h3 class="df-logo-title">ESF Le Faucon</h3>
+                    <p class="df-desc">Nous croyons en un avenir où l'éducation transforme des vies et forme des leaders
+                        d'excellence pour affronter les défis de demain.</p>
+                    <div class="df-socials">
+                        <a href="https://web.facebook.com/ESFAUCON/?_rdc=2&_rdr#" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="https://www.youtube.com/channel/UC0cuSUEAyzwwTOTxsKzkbhA" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="https://www.tiktok.com/@eslefaucon" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
+
+                <div class="df-col">
+                    <h4 class="df-col-title">Explorer</h4>
+                    <ul class="df-links">
+                        <li><a href="actualites.html">Actualités</a></li>
+                        <li><a href="campus.html">Nos Campus</a></li>
+                        <li><a href="filieres.html">Formations</a></li>
+                    </ul>
+                </div>
+
+                <div class="df-col">
+                    <h4 class="df-col-title">Entreprise</h4>
+                    <ul class="df-links">
+                        <li><a href="a-propos.html">À Propos</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="admission.html">Admissions</a></li>
+                    </ul>
+                </div>
+
+                <div class="df-col df-newsletter-col">
+                    <h4 class="df-col-title">Abonnez-vous</h4>
+                    <p class="df-desc">Abonnez-vous à notre newsletter pour les dernières nouvelles.</p>
+                    <form class="df-newsletter-form">
+                        <input type="email" placeholder="Entrez votre email" required>
+                        <button type="submit" class="btn-df-submit">S'abonner</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="df-bottom-bar">
+                <div class="df-copyright">
+                    &copy; 2026 ESF Le Faucon. Tous droits réservés.
+                </div>
+                <div class="df-legal-links">
+                    <a href="politique-confidentialite.html">Politique de confidentialité</a>
+                    <a href="fonctionnement.html">Fonctionnement du site</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="effects.js"></script>
+</body>
+
+</html>

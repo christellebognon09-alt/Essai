@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>À Propos - ESF Le Faucon</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .page-header {
+            background-color: #8178B1;
+            padding: 130px 5% 60px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .content-section {
+            padding: 80px 5%;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            margin-bottom: 80px;
+        }
+
+        .about-text h2 {
+            font-size: 2.2rem;
+            color: #111827;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .about-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #4B5563;
+            margin-bottom: 25px;
+        }
+
+        .about-image img {
+            width: 100%;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .value-card {
+            background: #f9fafb;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .value-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .value-card i {
+            font-size: 2.5rem;
+            color: #8178B1;
+            margin-bottom: 20px;
+        }
+
+        .value-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: #111827;
+        }
+
+        @media (max-width: 900px) {
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header home-header">
+        <div class="logo">
+            <a href="index.html"
+                style="text-decoration: none; font-size: 32px; font-weight: 800; font-family: 'Inter', sans-serif;">
+                <span style="color: #8178B1;">Fau</span><span style="color: #000000;">con</span>
+            </a>
+        </div>
+        <div class="header-center">
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="filieres.html">Filières</a></li>
+                    <li><a href="admission.html">Admission</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="header-right-actions">
+            <a href="login.html" class="btn-login">Connexion</a>
+            <a href="register.html" class="btn-register">S'inscrire</a>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <h1>À Propos de Nous</h1>
+        <p>Plus de 15 ans d'excellence académique au service de la jeunesse béninoise.</p>
+    </div>
+
+    <main class="content-section">
+        <div class="about-grid">
+            <div class="about-text">
+                <h2>Notre Histoire</h2>
+                <p>Fondée en 2007, l'École Supérieure Le Faucon est née d'une vision : offrir une formation technique et professionnelle de haut niveau, accessible et ancrée dans les réalités du marché de l'emploi.</p>
+                <p>Depuis plus d'une décennie, nous formons des cadres compétents dans les domaines du génie civil, de l'informatique, de la gestion et de la biochimie, en mettant l'accent sur la pratique et l'innovation.</p>
+            </div>
+            <div class="about-image">
+                <img src="https://images.unsplash.com/photo-152305085306e-8c3d3e7d9f3f?auto=format&fit=crop&w=800&q=80" alt="ESF Campus">
+            </div>
+        </div>
+
+        <h2 style="text-align: center; font-size: 2.2rem; margin-bottom: 50px;">Nos Valeurs Fondamentales</h2>
+        <div class="values-grid">
+            <div class="value-card">
+                <i class="fa-solid fa-star"></i>
+                <h3>Excellence</h3>
+                <p>Nous visons le plus haut niveau de qualité dans l'enseignement et l'encadrement.</p>
+            </div>
+            <div class="value-card">
+                <i class="fa-solid fa-lightbulb"></i>
+                <h3>Innovation</h3>
+                <p>Nous adaptons nos méthodes et nos outils aux évolutions technologiques constantes.</p>
+            </div>
+            <div class="value-card">
+                <i class="fa-solid fa-handshake"></i>
+                <h3>Intégrité</h3>
+                <p>L'éthique et la transparence sont au cœur de nos relations avec nos étudiants et partenaires.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-container-exact">
+            <div class="df-top-grid">
+                <div class="df-col">
+                    <h3 class="df-logo-title">ESF Le Faucon</h3>
+                    <p class="df-desc">Nous croyons en un avenir où l'éducation transforme des vies et forme des leaders
+                        d'excellence pour affronter les défis de demain.</p>
+                    <div class="df-socials">
+                        <a href="https://web.facebook.com/ESFAUCON/?_rdc=2&_rdr#" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="https://www.youtube.com/channel/UC0cuSUEAyzwwTOTxsKzkbhA" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="https://www.tiktok.com/@eslefaucon" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
+
+                <div class="df-col">
+                    <h4 class="df-col-title">Explorer</h4>
+                    <ul class="df-links">
+                        <li><a href="actualites.html">Actualités</a></li>
+                        <li><a href="campus.html">Nos Campus</a></li>
+                        <li><a href="filieres.html">Formations</a></li>
+                    </ul>
+                </div>
+
+                <div class="df-col">
+                    <h4 class="df-col-title">Entreprise</h4>
+                    <ul class="df-links">
+                        <li><a href="a-propos.html">À Propos</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="admission.html">Admissions</a></li>
+                    </ul>
+                </div>
+
+                <div class="df-col df-newsletter-col">
+                    <h4 class="df-col-title">Abonnez-vous</h4>
+                    <p class="df-desc">Abonnez-vous à notre newsletter pour les dernières nouvelles.</p>
+                    <form class="df-newsletter-form">
+                        <input type="email" placeholder="Entrez votre email" required>
+                        <button type="submit" class="btn-df-submit">S'abonner</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="df-bottom-bar">
+                <div class="df-copyright">
+                    &copy; 2026 ESF Le Faucon. Tous droits réservés.
+                </div>
+                <div class="df-legal-links">
+                    <a href="politique-confidentialite.html">Politique de confidentialité</a>
+                    <a href="fonctionnement.html">Fonctionnement du site</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="effects.js"></script>
+</body>
+
+</html>

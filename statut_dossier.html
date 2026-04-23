@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statut de dossier - ESF Bénin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+    <div class="dashboard-wrapper">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <a href="index.html" class="sidebar-logo">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <span style="color: #111827;">Fau<span style="color: #8178B1;">con</span></span>
+            </a>
+
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-file-pen"></i>
+                    Inscription
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-file-lines"></i>
+                    Mes documents
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-credit-card"></i>
+                    Mes paiements
+                </a>
+                <a href="statut_dossier.html" class="nav-item active">
+                    <i class="fa-solid fa-chart-line"></i>
+                    Statut de dossier
+                </a>
+            </nav>
+
+            <div class="help-box" style="margin: 40px 20px;">
+                <i class="fa-solid fa-headset"></i>
+                <h4 style="font-size: 1rem;">Besoin d'aide ?</h4>
+                <p style="font-size: 0.8rem;">Contactez le secrétariat pour toute assistance.</p>
+                <div class="btn-outline">Contacter</div>
+            </div>
+        </aside>
+
+        <!-- MAIN AREA -->
+        <main class="main-content">
+            <!-- TOP BAR -->
+            <header class="top-bar">
+                <div class="top-bar-left">
+                    <h1>Statut de dossier</h1>
+                </div>
+
+                <div class="top-bar-right">
+                    <div class="search-bar">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" placeholder="Rechercher...">
+                    </div>
+
+                    <div class="top-actions">
+                        <div class="icon-btn">
+                            <i class="fa-regular fa-bell"></i>
+                        </div>
+
+                        <div class="user-profile">
+                            <img src="https://ui-avatars.com/api/?name=Jean+Dupont&background=f1eff8&color=8178B1&bold=true"
+                                alt="User Profile" style="border-radius: 50%; width: 45px; height: 45px;">
+                            <div class="user-info">
+                                <h4>Jean Dupont</h4>
+                                <span>Étudiant - Postulant</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- DASHBOARD CONTENT -->
+            <div class="dashboard-body"
+                style="grid-template-columns: 1fr; max-width: 1000px; margin: 0 auto; width: 100%;">
+
+                <div class="form-panel">
+                    <div class="section-header">
+                        <h2>Suivi de votre admission</h2>
+                        <p>Consultez l'état d'avancement de votre dossier et les prochaines étapes de votre inscription.
+                        </p>
+                    </div>
+
+                    <div class="inline-status-section"
+                        style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px; margin-top: 20px; padding: 40px; background: #F9FAFB; border-radius: 20px; border: 1px solid #E5E7EB;">
+
+                        <div class="status-card" style="margin-bottom: 0; align-self: start;">
+                            <div class="status-header">
+                                <div class="status-icon"><i class="fa-solid fa-spinner fa-spin-pulse"></i></div>
+                                <h3>Statut actuel</h3>
+                            </div>
+                            <p style="color: #6B7280; font-size: 0.95rem; line-height: 1.6;">Vous êtes à l'étape de
+                                création. Veuillez remplir le formulaire et envoyer vos documents au secrétariat sur la
+                                page <strong>Inscription</strong>.</p>
+
+                            <a href="dashboard.html" class="btn btn-primary"
+                                style="margin-top: 20px; text-decoration: none; display: inline-flex; width: 100%;">
+                                Reprendre l'inscription <i class="fa-solid fa-arrow-right"
+                                    style="margin-left: 8px;"></i>
+                            </a>
+                        </div>
+
+                        <div>
+                            <div class="section-header" style="margin-bottom: 25px;">
+                                <h2 style="font-size: 1.3rem;">Processus d'admission</h2>
+                            </div>
+
+                            <div class="progress-timeline" style="margin-top: 0;">
+                                <div class="timeline-step active">
+                                    <div class="step-dot"></div>
+                                    <h4 style="font-size: 1.05rem;">1. Formulaire & Documents</h4>
+                                    <p style="font-size: 0.9rem;">En cours - Informations manquantes</p>
+                                </div>
+                                <div class="timeline-step">
+                                    <div class="step-dot"></div>
+                                    <h4 style="font-size: 1.05rem;">2. Validation du dossier</h4>
+                                    <p style="font-size: 0.9rem;">En attente du secrétariat</p>
+                                </div>
+                                <div class="timeline-step">
+                                    <div class="step-dot"></div>
+                                    <h4 style="font-size: 1.05rem;">3. Obtention du matricule</h4>
+                                    <p style="font-size: 0.9rem;">Généré automatiquement</p>
+                                </div>
+                                <div class="timeline-step">
+                                    <div class="step-dot"></div>
+                                    <h4 style="font-size: 1.05rem;">4. Paiement 1ère tranche</h4>
+                                    <p style="font-size: 0.9rem;">En attente du matricule</p>
+                                </div>
+                                <div class="timeline-step">
+                                    <div class="step-dot"></div>
+                                    <h4 style="font-size: 1.05rem;">5. Inscrit !</h4>
+                                    <p style="font-size: 0.9rem;">Statut étudiant confirmé</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

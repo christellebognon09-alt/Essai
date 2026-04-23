@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contactez-nous - ESF Bénin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .hero-wrapper-full {
+            background-color: #8178B1;
+            /* Violet background */
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .contact-hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 120px 5% 40px;
+            position: relative;
+            min-height: 480px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .contact-hero-content {
+            flex: 1;
+            max-width: 600px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .contact-subtitle {
+            font-size: 1.1rem;
+            color: #ffffff;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: inline-block;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .contact-hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.15;
+            margin-bottom: 25px;
+            letter-spacing: -1px;
+        }
+
+        .contact-hero-title .highlight {
+            color: #ffffff;
+            position: relative;
+            display: inline-block;
+        }
+
+        .contact-hero-title .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 12px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            z-index: -1;
+        }
+
+        .contact-hero-image {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-end;
+            margin-left: 40px;
+        }
+
+        .contact-hero-image img {
+            max-height: 440px;
+            z-index: 5;
+            position: relative;
+            border-radius: 30px;
+            object-fit: cover;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .float-badge {
+            position: absolute;
+            background: #ffffff;
+            color: #8178B1;
+            padding: 20px;
+            border-radius: 50%;
+            width: 130px;
+            height: 130px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            top: 15%;
+            left: -40px;
+            z-index: 10;
+            border: 4px solid #8178B1;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .float-badge i {
+            font-size: 1.6rem;
+            margin-bottom: 5px;
+        }
+
+        .float-badge span {
+            font-weight: 800;
+            font-size: 1.2rem;
+            line-height: 1.2;
+        }
+
+        .float-badge small {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            margin-top: 2px;
+        }
+
+        @media (max-width: 900px) {
+            .contact-hero {
+                flex-direction: column;
+                padding-top: 80px;
+                text-align: center;
+            }
+
+            .contact-hero-title {
+                font-size: 3rem;
+            }
+
+            .float-badge {
+                display: none;
+            }
+
+            .contact-hero-image {
+                margin-top: 50px;
+                margin-left: 0;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+
+        <!-- MESSAGE FORM SECTION -->
+        <section class="contact-form-section">
+            <div class="container-exact">
+                <div class="form-wrapper" data-animate="fade-up">
+                    <div class="form-header">
+                        <h2>Laissez nous un message</h2>
+                        <p>Nous vous répondrons dans les plus brefs délais.</p>
+                    </div>
+
+                    <form action="#" class="contact-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="name">Votre nom*</label>
+                                <input type="text" id="name" placeholder="Ex: Jean Dupont" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email*</label>
+                                <input type="email" id="email" placeholder="email@exemple.com" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="subject">Objet*</label>
+                                <input type="text" id="subject" placeholder="Sujet de votre message" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="message">Message*</label>
+                                <textarea id="message" rows="5" placeholder="Comment pouvons-nous vous aider ?"
+                                    required></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" class="submit-btn">Envoyer le message <i
+                                class="fa-solid fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-container-exact">
+            <div class="df-top-grid">
+                <!-- Col 1: Brand & Desc -->
+                <div class="df-col">
+                    <h3 class="df-logo-title">ESF Le Faucon</h3>
+                    <p class="df-desc">Nous croyons en un avenir où l'éducation transforme des vies et forme des leaders
+                        d'excellence pour affronter les défis de demain.</p>
+                    <div class="df-socials">
+                        <a href="https://web.facebook.com/ESFAUCON/?_rdc=2&_rdr#" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="https://www.youtube.com/channel/UC0cuSUEAyzwwTOTxsKzkbhA" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="https://www.tiktok.com/@eslefaucon" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
+
+                <!-- Col 2: Explorer -->
+                <div class="df-col">
+                    <h4 class="df-col-title">Explorer</h4>
+                    <ul class="df-links">
+                        <li><a href="actualites.html">Actualités</a></li>
+                        <li><a href="campus.html">Nos Campus</a></li>
+                        <li><a href="filieres.html">Formations</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Entreprise -->
+                <div class="df-col">
+                    <h4 class="df-col-title">Entreprise</h4>
+                    <ul class="df-links">
+                        <li><a href="a-propos.html">À Propos</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="admission.html">Admissions</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Newsletter -->
+                <div class="df-col df-newsletter-col">
+                    <h4 class="df-col-title">Abonnez-vous</h4>
+                    <p class="df-desc">Abonnez-vous à notre newsletter pour les dernières nouvelles.</p>
+                    <form class="df-newsletter-form">
+                        <input type="email" placeholder="Entrez votre email" required>
+                        <button type="submit" class="btn-df-submit">S'abonner</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="df-bottom-bar">
+                <div class="df-copyright">
+                    &copy; 2026 ESF Le Faucon. Tous droits réservés.
+                </div>
+                <div class="df-legal-links">
+                    <a href="politique-confidentialite.html">Politique de confidentialité</a>
+                    <a href="fonctionnement.html">Fonctionnement du site</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="effects.js"></script>
+</body>
+
+</html>
