@@ -283,6 +283,18 @@
                 const data = await response.json();
 
                 if (response.ok) {
+                    if (data.access_token) {
+                        localStorage.setItem('token', data.access_token);
+                    }
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    // Nettoyer les anciennes données du formulaire à chaque nouvelle inscription
+                    Object.keys(localStorage).forEach(key => {
+                        if (key.startsWith('faucon_')) {
+                            localStorage.removeItem(key);
+                        }
+                    });
+                    
                     window.location.href = 'dashboard.html';
                 } else {
                     const errorContainer = document.getElementById('register-error');

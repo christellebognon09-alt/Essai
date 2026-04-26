@@ -103,9 +103,12 @@ app.post('/api/register', async (req, res) => {
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const result = await db.run('INSERT INTO users (firstname, lastname, email, password) VALUES (?, ?, ?, ?)', [
-      firstname, lastname, email, hashedPassword
-    ]);
+    // Include created_at and updated_at for compatibility with Laravel-migrated tables
+    const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const result = await db.run(
+      'INSERT INTO users (firstname, lastname, email, password, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)',
+      [firstname, lastname, email, hashedPassword, now, now]
+    );
     const user = { id: result.lastInsertRowid, email, firstname, lastname, registration_complete: 0 };
     
     req.login(user, (err) => {
@@ -116,10 +119,11 @@ app.post('/api/register', async (req, res) => {
       });
     });
   } catch (error) {
-    if (error.code === 'SQLITE_CONSTRAINT_UNIQUE') {
-      res.status(400).json({ message: 'Email already exists' });
+    if (error.code === 'ER_DUP_ENTRY') {
+      res.status(400).json({ message: 'Cet email est déjà utilisé' });
     } else {
-      res.status(500).json({ message: 'Database error', error: error.message });
+      console.error('Registration error:', error);
+      res.status(500).json({ message: 'Erreur de base de données', detail: error.message });
     }
   }
 });

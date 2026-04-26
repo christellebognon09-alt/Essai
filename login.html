@@ -384,8 +384,24 @@
                 const data = await response.json();
 
                 if (response.ok) {
+                    if (data.access_token) {
+                        localStorage.setItem('token', data.access_token);
+                    }
+                    localStorage.setItem('user', JSON.stringify(data.user));
+
+                    // Nettoyer les anciennes données du formulaire à chaque nouvelle connexion
+                    Object.keys(localStorage).forEach(key => {
+                        if (key.startsWith('faucon_')) {
+                            localStorage.removeItem(key);
+                        }
+                    });
+
                     if (data.user.role === 'Admin') {
                         window.location.href = 'dashboard_admin.html';
+                    } else if (data.user.role === 'Secrétaire') {
+                        window.location.href = 'dashboard_secretaire.html';
+                    } else if (data.user.role === 'Comptable') {
+                        window.location.href = 'dashboard_comptable.html';
                     } else {
                         window.location.href = 'dashboard.html';
                     }

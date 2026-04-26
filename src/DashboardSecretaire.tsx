@@ -181,7 +181,13 @@ export default function DashboardSecretaire() {
     const [notifications, setNotifications] = useState<any[]>([]);
 
     const fetchStudents = () => {
-        fetch('/api/admin/students')
+        const token = localStorage.getItem('token');
+        fetch('/api/admin/students', {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+            }
+        })
             .then(res => res.json())
             .then(data => {
                 const mapped: Student[] = data.map((u: any) => ({
@@ -218,10 +224,10 @@ export default function DashboardSecretaire() {
                         job: u.parent_mother_job || ''
                     },
                     documents: [
-                        { id: '1', name: 'Acte de Naissance', status: u.doc_acte_naissance ? 'ok' : 'missing', url: u.doc_acte_naissance || '#' },
-                        { id: '2', name: 'Photo d\'identité', status: u.doc_photo ? 'ok' : 'missing', url: u.doc_photo || '#' },
-                        { id: '3', name: 'Attestation Bac', status: u.doc_attestation_bac ? 'ok' : 'missing', url: u.doc_attestation_bac || '#' },
-                        { id: '4', name: 'Relevé de Notes', status: u.doc_bulletins ? 'ok' : 'missing', url: u.doc_bulletins || '#' },
+                        { id: '1', name: 'Acte de Naissance', status: u.doc_acte_naissance ? 'ok' : 'missing', url: u.doc_acte_naissance ? `/storage/${u.doc_acte_naissance}` : '#' },
+                        { id: '2', name: 'Photo d\'identité', status: u.doc_photo ? 'ok' : 'missing', url: u.doc_photo ? `/storage/${u.doc_photo}` : '#' },
+                        { id: '3', name: 'Attestation Bac', status: u.doc_attestation_bac ? 'ok' : 'missing', url: u.doc_attestation_bac ? `/storage/${u.doc_attestation_bac}` : '#' },
+                        { id: '4', name: 'Relevé de Notes', status: u.doc_bulletins ? 'ok' : 'missing', url: u.doc_bulletins ? `/storage/${u.doc_bulletins}` : '#' },
                     ]
                 }));
                 setStudents(mapped);
@@ -271,10 +277,15 @@ export default function DashboardSecretaire() {
     };
 
     const handleValidate = (id: string) => {
+        const token = localStorage.getItem('token');
         fetch('/api/admin/validate-dossier', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ studentId: id })
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ studentId: id, notes: commMessage })
         })
         .then(res => res.json())
         .then(() => {
@@ -290,9 +301,14 @@ export default function DashboardSecretaire() {
         const student = students.find(s => s.id === id);
         if (!student) return;
 
+        const token = localStorage.getItem('token');
         fetch('/api/admin/reject-dossier', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+            },
             body: JSON.stringify({ studentId: id, notes: commMessage })
         })
         .then(res => res.json())
@@ -309,9 +325,14 @@ export default function DashboardSecretaire() {
         const student = students.find(s => s.id === id);
         if (!student) return;
 
+        const token = localStorage.getItem('token');
         fetch('/api/admin/save-notes', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+            },
             body: JSON.stringify({ studentId: id, notes: commMessage })
         })
         .then(res => res.json())

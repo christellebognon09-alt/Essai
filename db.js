@@ -139,8 +139,9 @@ export const initDB = async () => {
             const existing = await db.get('SELECT * FROM users WHERE email = ?', [u.email]);
             if (!existing) {
                 const hashedPassword = await bcrypt.default.hash(u.pass, 10);
-                await db.run('INSERT INTO users (firstname, lastname, email, password, role) VALUES (?, ?, ?, ?, ?)', [
-                    u.first, u.last, u.email, hashedPassword, u.role
+                const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
+                await db.run('INSERT INTO users (firstname, lastname, email, password, role, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)', [
+                    u.first, u.last, u.email, hashedPassword, u.role, now, now
                 ]);
                 console.log(`Compte créé : ${u.email} / ${u.pass} (${u.role})`);
             }

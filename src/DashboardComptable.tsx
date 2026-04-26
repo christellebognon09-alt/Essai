@@ -230,9 +230,9 @@ const ReceiptViewerModal = ({ user, onClose, onValidate }: { user: any, onClose:
                 <div className="w-full h-full bg-white rounded-3xl shadow-inner border border-gray-100 overflow-hidden relative">
                     {user.receipt_url ? (
                         user.receipt_url.toLowerCase().endsWith('.pdf') ? (
-                           <iframe src={user.receipt_url} className="w-full h-full border-none" title="Reçu" />
+                           <iframe src={`/storage/${user.receipt_url}`} className="w-full h-full border-none" title="Reçu" />
                         ) : (
-                           <img src={user.receipt_url} className="w-full h-full object-contain" alt="Reçu de paiement" />
+                           <img src={`/storage/${user.receipt_url}`} className="w-full h-full object-contain" alt="Reçu de paiement" />
                         )
                     ) : (
                         <div className="flex flex-col items-center justify-center h-full text-gray-300 gap-4">
@@ -332,7 +332,13 @@ export default function DashboardComptable() {
     };
 
     const fetchStudents = () => {
-        fetch('/api/admin/students')
+        const token = localStorage.getItem('token');
+        fetch('/api/admin/students', {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+            }
+        })
             .then(res => res.json())
             .then(data => {
                 setStudents(data);
@@ -381,9 +387,14 @@ export default function DashboardComptable() {
             return;
         }
 
+        const token = localStorage.getItem('token');
         fetch('/api/admin/generate-matricule', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+            },
             body: JSON.stringify({
                 studentId: selectedStudentForMatricule.id,
                 matricule: selectedStudentForMatricule.matricule,
@@ -400,9 +411,14 @@ export default function DashboardComptable() {
     };
 
     const handleValidatePayment = (studentId: number) => {
+        const token = localStorage.getItem('token');
         fetch('/api/admin/validate-payment', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+            },
             body: JSON.stringify({ studentId })
         })
         .then(res => res.json())

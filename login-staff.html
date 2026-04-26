@@ -362,6 +362,19 @@
                 const data = await response.json();
 
                 if (response.ok) {
+                    // Sauvegarder le token et les infos utilisateur pour Laravel
+                    if (data.access_token) {
+                        localStorage.setItem('token', data.access_token);
+                    }
+                    localStorage.setItem('user', JSON.stringify(data.user));
+
+                    // Nettoyer les anciennes données du formulaire à chaque nouvelle connexion
+                    Object.keys(localStorage).forEach(key => {
+                        if (key.startsWith('faucon_')) {
+                            localStorage.removeItem(key);
+                        }
+                    });
+
                     const role = data.user.role;
                     
                     // Map roles to their respective pages
@@ -369,7 +382,7 @@
                         'Secrétaire': 'dashboard_secretaire.html',
                         'Comptable': 'dashboard_comptable.html',
                         'Admin': 'dashboard_admin.html',
-                        'Surveillant': 'dashboard_professeur.html', // Surveillant maps to professeur dashboard for now
+                        'Surveillant': 'dashboard_professeur.html',
                         'Professeur': 'dashboard_professeur.html'
                     };
 

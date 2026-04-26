@@ -171,7 +171,7 @@ export default function DashboardAdmin() {
         if (files) {
             const newFiles = Array.from(files);
             setGalleryFiles(prev => [...prev, ...newFiles]);
-            const newPreviews = newFiles.map(file => URL.createObjectURL(file));
+            const newPreviews = newFiles.map((file: File) => URL.createObjectURL(file));
             setPreviews(prev => [...prev, ...newPreviews]);
         }
     };
@@ -196,7 +196,13 @@ export default function DashboardAdmin() {
     // Fetch news on mount or when page changes to communication
     React.useEffect(() => {
         if (activePage === 'communication') {
-            fetch('/api/news')
+            const token = localStorage.getItem('token');
+            fetch('/api/news', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            })
                 .then(res => res.json())
                 .then(data => setNews(Array.isArray(data) ? data : []))
                 .catch(err => console.error('Error fetching news:', err));
@@ -225,17 +231,28 @@ export default function DashboardAdmin() {
         try {
             const url = editingId ? `/api/admin/news/${editingId}` : '/api/admin/news';
             const method = editingId ? 'PUT' : 'POST';
+            const token = localStorage.getItem('token');
 
             console.log(`[NEWS] ${method} to ${url}`);
 
             const res = await fetch(url, {
                 method: method,
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                },
                 body: formData
             });
 
             if (res.ok) {
                 console.log("[NEWS] Success!");
-                const updatedNews = await fetch('/api/news').then(r => r.json());
+                const token = localStorage.getItem('token');
+                const updatedNews = await fetch('/api/news', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                }).then(r => r.json());
                 setNews(Array.isArray(updatedNews) ? updatedNews : []);
                 
                 alert(editingId ? "Modification enregistrée !" : "Article publié avec succès !");
@@ -277,7 +294,14 @@ export default function DashboardAdmin() {
     const handleDeleteNews = async (id: number) => {
         if (!confirm('Supprimer cette actualité ?')) return;
         try {
-            const res = await fetch(`/api/admin/news/${id}`, { method: 'DELETE' });
+            const token = localStorage.getItem('token');
+            const res = await fetch(`/api/admin/news/${id}`, { 
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            });
             if (res.ok) setNews(news.filter(n => n.id !== id));
         } catch (err) {
             console.error(err);

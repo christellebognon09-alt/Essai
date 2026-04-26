@@ -86,7 +86,6 @@ interface FormData {
   jour: string;
   mois: string;
   annee: string;
-  villeNaissance: string;
   paysNaissance: string;
   nationalite: string;
   adresse: string;
@@ -251,7 +250,7 @@ export default function App() {
   const [formData, setFormData] = useState<FormData>(() => {
     const saved = localStorage.getItem('faucon_form_data');
     return saved ? JSON.parse(saved) : {
-      nom: '', prenom: '', email: '', telephone: '', genre: '', jour: '', mois: '', annee: '', villeNaissance: '', paysNaissance: '', nationalite: '', adresse: '',
+      nom: '', prenom: '', email: '', telephone: '', genre: '', jour: '', mois: '', annee: '', paysNaissance: '', nationalite: '', adresse: '',
       filiere: '', niveau: '',
       nomPere: '', prenomPere: '', emailPere: '', telephonePere: '', autreInfoPere: '',
       nomMere: '', prenomMere: '', emailMere: '', telephoneMere: '', autreInfoMere: ''
@@ -293,12 +292,19 @@ export default function App() {
 
   // --- Auth Check ---
   const fetchUserData = () => {
-    fetch('/api/me')
+    const token = localStorage.getItem('token');
+    fetch('/api/me', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json'
+      }
+    })
       .then(res => res.json())
       .then(data => {
-        if (data.authenticated) {
+        if (data.id) { // Laravel returns the user object directly if authenticated
+          const user = data;
           const lastUserEmail = localStorage.getItem('faucon_auth_email');
-          if (lastUserEmail !== data.user.email) {
+          if (lastUserEmail !== user.email) {
             // User changed or first login after update: Clear old local storage
             console.log("Session reset detected. Clearing local storage.");
             const keysToRemove = [];
@@ -314,10 +320,10 @@ export default function App() {
             setFormStep(1);
             setCurrentPage('inscription');
             setFormData({
-              nom: data.user.lastname || '',
-              prenom: data.user.firstname || '',
-              email: data.user.email || '',
-              telephone: '', genre: '', jour: '', mois: '', annee: '', villeNaissance: '', paysNaissance: '', nationalite: '', adresse: '',
+              nom: user.lastname || '',
+              prenom: user.firstname || '',
+              email: user.email || '',
+              telephone: '', genre: '', jour: '', mois: '', annee: '', paysNaissance: '', nationalite: '', adresse: '',
               filiere: '', niveau: '',
               nomPere: '', prenomPere: '', emailPere: '', telephonePere: '', autreInfoPere: '',
               nomMere: '', prenomMere: '', emailMere: '', telephoneMere: '', autreInfoMere: ''
@@ -325,15 +331,44 @@ export default function App() {
             setIsSubmitted(false);
           }
           
-          localStorage.setItem('faucon_auth_email', data.user.email);
-          setCurrentUser(data.user);
+          localStorage.setItem('faucon_auth_email', user.email);
+          setCurrentUser(user);
 
-          if (data.user.registration_complete) {
+          // Always populate formData from backend to sync state
+          const birthParts = (user.birth_date || "").split(" ");
+          setFormData(prev => ({
+            ...prev,
+            nom: user.lastname || prev.nom,
+            prenom: user.firstname || prev.prenom,
+            email: user.email || prev.email,
+            telephone: user.phone || prev.telephone,
+            genre: user.gender || prev.genre,
+            jour: birthParts[0] || prev.jour,
+            mois: birthParts[1] || prev.mois,
+            annee: birthParts[2] || prev.annee,
+            paysNaissance: user.birth_country || prev.paysNaissance,
+            nationalite: user.nationality || prev.nationalite,
+            adresse: user.address || prev.adresse,
+            filiere: user.filiere || prev.filiere,
+            niveau: user.level || prev.niveau,
+            nomPere: user.parent_father_name || prev.nomPere,
+            prenomPere: user.parent_father_firstname || prev.prenomPere,
+            emailPere: user.parent_father_email || prev.emailPere,
+            telephonePere: user.parent_father_phone || prev.telephonePere,
+            autreInfoPere: user.parent_father_job || prev.autreInfoPere,
+            nomMere: user.parent_mother_name || prev.nomMere,
+            prenomMere: user.parent_mother_firstname || prev.prenomMere,
+            emailMere: user.parent_mother_email || prev.emailMere,
+            telephoneMere: user.parent_mother_phone || prev.telephoneMere,
+            autreInfoMere: user.parent_mother_job || prev.autreInfoMere,
+          }));
+
+          if (user.registration_complete) {
             setIsSubmitted(true);
-            const step = data.user.status_step || 1;
+            const step = user.status_step || 1;
             setStatusStep(step);
-            setIsRejected(data.user.is_rejected === 1);
-            if (data.user.admin_notes) setRejectionMessage(data.user.admin_notes);
+            setIsRejected(!!user.is_rejected);
+            if (user.admin_notes) setRejectionMessage(user.admin_notes);
             
             if (step === 5) {
               setCurrentPage('dashboard');
@@ -372,10 +407,15 @@ export default function App() {
   }, [currentPage, statusStep]);
 
   const updateStatusStep = (newStep: number) => {
+    const token = localStorage.getItem('token');
     setStatusStep(newStep);
     fetch('/api/update-status-step', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json'
+      },
       body: JSON.stringify({ step: newStep })
     }).catch(err => console.error('Failed to update status step:', err));
   };
@@ -386,8 +426,13 @@ export default function App() {
     formDataObj.append('receipt', receipt);
 
     try {
+      const token = localStorage.getItem('token');
       const res = await fetch('/api/submit-receipt', {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json'
+        },
         body: formDataObj
       });
       if (res.ok) {
@@ -503,7 +548,14 @@ export default function App() {
     if (!formData.nom) fields.push('nom');
     if (!formData.prenom) fields.push('prenom');
     if (!formData.email || !isValidEmail(formData.email)) fields.push('email');
-    // Others are optional
+    if (!formData.telephone || !isValidPhone(formData.telephone)) fields.push('telephone');
+    if (!formData.genre) fields.push('genre');
+    if (!formData.jour) fields.push('jour');
+    if (!formData.mois) fields.push('mois');
+    if (!formData.annee) fields.push('annee');
+    if (!formData.paysNaissance) fields.push('paysNaissance');
+    if (!formData.nationalite) fields.push('nationalite');
+    if (!formData.adresse) fields.push('adresse');
     return fields;
   }, [formData]);
 
@@ -511,8 +563,10 @@ export default function App() {
     const fields = [];
     if (!formData.nomPere) fields.push('nomPere');
     if (!formData.prenomPere) fields.push('prenomPere');
+    if (!formData.autreInfoPere) fields.push('autreInfoPere');
     if (!formData.nomMere) fields.push('nomMere');
     if (!formData.prenomMere) fields.push('prenomMere');
+    if (!formData.autreInfoMere) fields.push('autreInfoMere');
     return fields;
   }, [formData]);
 
@@ -551,10 +605,9 @@ export default function App() {
     const formDataToSend = new FormData();
     formDataToSend.append('firstname', formData.prenom);
     formDataToSend.append('lastname', formData.nom);
-    formDataToSend.append('telephone', formData.telephone);
+    formDataToSend.append('phone', formData.telephone);
     formDataToSend.append('genre', formData.genre);
     formDataToSend.append('birth_date', `${formData.jour} ${formData.mois} ${formData.annee}`);
-    formDataToSend.append('birth_city', formData.villeNaissance);
     formDataToSend.append('birth_country', formData.paysNaissance);
     formDataToSend.append('nationality', formData.nationalite);
     formDataToSend.append('address', formData.adresse);
@@ -579,19 +632,34 @@ export default function App() {
     if (docs.attestationBac) formDataToSend.append('attestationBac', docs.attestationBac);
     if (docs.bulletinsNotes) formDataToSend.append('bulletinsNotes', docs.bulletinsNotes);
 
+    const token = localStorage.getItem('token');
     fetch('/api/update-profile', {
       method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json'
+      },
       body: formDataToSend
       // No Content-Type header needed, browser will set it to multipart/form-data with boundary
     })
-    .then(res => res.json())
+    .then(async res => {
+      const data = await res.json();
+      if (!res.ok) {
+        // Log precise error if available
+        const errorMsg = data.message || data.error || JSON.stringify(data.errors) || "Erreur serveur";
+        throw new Error(errorMsg);
+      }
+      return data;
+    })
     .then(data => {
       // Re-fetch user to get updated info and registration_complete status
-      fetch('/api/me')
+      fetch('/api/me', {
+        headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+      })
         .then(res => res.json())
         .then(userData => {
-          if (userData.authenticated) {
-            setCurrentUser(userData.user);
+          if (userData.id) {
+            setCurrentUser(userData);
             setIsSubmitted(true);
             setStatusStep(1);
             setCurrentPage('succes');
@@ -600,12 +668,21 @@ export default function App() {
         });
     })
     .catch(err => {
-      setFormError("Erreur lors de l'enregistrement du profil. Veuillez réessayer.");
+      console.error("Save error:", err);
+      setFormError("Erreur lors de l'enregistrement du profil: " + err.message);
+      alert("Une erreur est survenue lors de la soumission. Veuillez vérifier les messages d'erreur.");
     });
   };
 
   const handleLogout = () => {
-    fetch('/api/logout', { method: 'POST' })
+    const token = localStorage.getItem('token');
+    fetch('/api/logout', { 
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json'
+      }
+    })
       .then(() => {
         localStorage.clear();
         window.location.href = 'login.html';
@@ -711,7 +788,7 @@ export default function App() {
 
                           <div className="flex flex-col gap-1.5">
                             <label className="text-xs font-semibold text-gray-700">Sexe</label>
-                            <div className="flex gap-2">
+                            <div className={`flex gap-2 p-1 rounded-lg ${((touchedFields.has('genre') || showErrors) && !formData.genre) ? 'bg-red-50 ring-1 ring-red-200' : ''}`}>
                               {['Masculin', 'Féminin'].map(g => (
                                 <button
                                   key={g}
@@ -1089,8 +1166,13 @@ export default function App() {
               </div>
             </div>
 
-            {/* Right Side Panel / Actions */}
             <div className="w-64 shrink-0 flex flex-col gap-4 mt-[52px] sticky top-[52px] h-fit">
+              {formError && (
+                <div className="bg-red-50 border border-red-100 p-4 rounded-md mb-2">
+                  <p className="text-[10px] font-bold text-red-600 uppercase mb-1">Erreur</p>
+                  <p className="text-[11px] text-red-700 leading-tight">{formError}</p>
+                </div>
+              )}
               {!isDraft ? (
                 <button
                   onClick={handleSave}
@@ -1217,14 +1299,20 @@ export default function App() {
                           <div className="flex flex-col items-center gap-6">
                             <button
                               onClick={() => {
-                                setIsRejected(false);
-                                setIsSubmitted(false);
-                                setCurrentPage('inscription');
-                                setFormStep(3);
+                                const token = localStorage.getItem('token');
+                                fetch('/api/re-edit-profile', {
+                                  method: 'POST',
+                                  headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+                                }).then(() => {
+                                  setIsRejected(false);
+                                  setIsSubmitted(false);
+                                  setCurrentPage('inscription');
+                                  setFormStep(1);
+                                });
                               }}
                               className="bg-orange-500 text-white px-10 py-4 rounded-xl font-bold text-sm hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/30"
                             >
-                              Modifier mes documents
+                              Modifier mes informations
                             </button>
                           </div>
                         </div>
@@ -1259,40 +1347,27 @@ export default function App() {
                       <div className="space-y-6 max-w-md mx-auto w-full">
                         {currentUser?.matricule ? (
                           <div className="space-y-6">
-                            <div className="bg-white border-2 border-gray-100 p-8 rounded-[32px] space-y-6 shadow-sm">
+                            <div className="bg-white border-2 border-[#8178BB]/10 p-8 rounded-[32px] space-y-6 shadow-sm text-center">
                               <div className="space-y-2">
-                                <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block px-1">Adresse Email Académique</label>
-                                <input 
-                                  value={inputEmail}
-                                  onChange={(e) => setInputEmail(e.target.value)}
-                                  placeholder="Entrez l'email généré par le comptable"
-                                  className="w-full bg-gray-50 border-none p-4 rounded-xl text-sm font-bold text-gray-800 outline-none focus:ring-2 focus:ring-[#8178BB]/20 transition-all"
-                                />
+                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Votre Matricule Officiel</label>
+                                <p className="text-3xl font-black text-[#8178BB] tracking-tighter">{currentUser.matricule}</p>
                               </div>
+                              <div className="h-px bg-gray-50 w-full" />
                               <div className="space-y-2">
-                                <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block px-1">Matricule Étudiant</label>
-                                <input 
-                                  value={inputMatricule}
-                                  onChange={(e) => setInputMatricule(e.target.value)}
-                                  placeholder="Entrez votre matricule reçu"
-                                  className="w-full bg-gray-50 border-none p-4 rounded-xl text-sm font-bold text-gray-800 outline-none focus:ring-2 focus:ring-[#8178BB]/20 tracking-wider font-mono transition-all"
-                                />
+                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Email Académique</label>
+                                <p className="text-sm font-bold text-gray-700">{currentUser.email}</p>
                               </div>
                             </div>
                             
-                            {(inputEmail.toLowerCase() === currentUser.email?.toLowerCase() && inputMatricule === currentUser.matricule) ? (
-                              <button
-                                onClick={() => updateStatusStep(3)}
-                                className="w-full bg-[#8178BB] text-white py-5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-[#8178BB]/20 hover:bg-[#7168A0] transition-all"
-                              >
-                                Valider et passer au paiement
-                              </button>
-                            ) : (
-                                <div className="text-center space-y-2">
-                                   <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Saisissez vos identifiants pour continuer</p>
-                                   <p className="text-[8px] text-[#8178BB] font-bold">Identifiants prêts ! Vérifiez votre boîte mail.</p>
-                                </div>
-                            )}
+                            <button
+                              onClick={() => updateStatusStep(3)}
+                              className="w-full bg-[#8178BB] text-white py-5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-[#8178BB]/20 hover:bg-[#7168A0] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3"
+                            >
+                              Confirmer et passer au paiement
+                              <ChevronRight size={18} />
+                            </button>
+                            
+                            <p className="text-[9px] text-center text-gray-400 font-bold uppercase tracking-widest">Veuillez conserver précieusement ces identifiants</p>
                           </div>
                         ) : (
                           <div className="flex flex-col items-center gap-6">
