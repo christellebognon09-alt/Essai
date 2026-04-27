@@ -35,6 +35,7 @@ class User extends Authenticatable
         'nationality',
         'address',
         'filiere',
+        'filiere_id',
         'level',
         'parent_father_name',
         'parent_father_firstname',

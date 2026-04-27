@@ -289,6 +289,39 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [inputEmail, setInputEmail] = useState('');
   const [inputMatricule, setInputMatricule] = useState('');
+  const [activeAnnee, setActiveAnnee] = useState<any>(null);
+  const [filieres, setFilieres] = useState<any[]>([]);
+  const [financeData, setFinanceData] = useState<any>({ configs: [], extra_frais: [], tariffs: [] });
+
+  const userFiliere = useMemo(() => {
+    if (!filieres.length) return null;
+    if (currentUser?.filiere_id) {
+        return filieres.find(f => f.id === currentUser.filiere_id) || null;
+    }
+    return filieres.find(f => f.nom === (currentUser?.filiere || formData.filiere)) || filieres[0] || null;
+  }, [filieres, currentUser, formData.filiere]);
+
+  const userFinanceConfig = useMemo(() => {
+    return (financeData.configs || []).find((c: any) => c.filiere_id === userFiliere?.id);
+  }, [financeData.configs, userFiliere]);
+
+  const scolariteStats = useMemo(() => {
+    if (!userFinanceConfig) return { total: 0, paid: 0, percent: 0, rest: 0 };
+    
+    const extraTotal = (financeData.extra_frais || [])
+      .filter((e: any) => e.filiere_id === userFiliere?.id)
+      .reduce((acc: number, curr: any) => acc + curr.amount, 0);
+
+    const total = userFinanceConfig.inscription + userFinanceConfig.tranche1 + userFinanceConfig.tranche2 + userFinanceConfig.tranche3 + userFinanceConfig.frais_stage + userFinanceConfig.frais_dossier + extraTotal;
+    
+    // Logic for totalPaid based on status_step (simplified for now)
+    let paid = 0;
+    if (statusStep >= 5) paid = userFinanceConfig.inscription; 
+    if (statusStep >= 6) paid = total; 
+    
+    const percent = total > 0 ? Math.round((paid / total) * 100) : 0;
+    return { total, paid, percent, rest: total - paid };
+  }, [userFinanceConfig, financeData.extra_frais, statusStep]);
 
   // --- Auth Check ---
   const fetchUserData = () => {
@@ -395,6 +428,28 @@ export default function App() {
 
   useEffect(() => {
     fetchUserData();
+
+    // Fetch active academic year
+    fetch('/api/academique/annees', { headers: { 'Accept': 'application/json' } })
+      .then(res => res.json())
+      .then(data => {
+        const anneesArray = Array.isArray(data) ? data : [];
+        const active = anneesArray.find((a: any) => a.est_active) || anneesArray[0] || null;
+        setActiveAnnee(active);
+      })
+      .catch(err => console.error('Error fetching annees:', err));
+    
+    // Fetch filieres
+    fetch('/api/academique/filieres', { headers: { 'Accept': 'application/json' } })
+      .then(res => res.json())
+      .then(data => setFilieres(Array.isArray(data) ? data : []))
+      .catch(err => console.error('Error fetching filieres:', err));
+
+    // Fetch finance configs
+    fetch('/api/finances/configs', { headers: { 'Accept': 'application/json' } })
+      .then(res => res.json())
+      .then(data => setFinanceData(data))
+      .catch(err => console.error('Error fetching finance configs:', err));
     
     // Refresh every 10s only if we are in the "Succes" flow (waiting for validation/matricule/payment)
     const interval = setInterval(() => {
@@ -1698,13 +1753,13 @@ export default function App() {
                        <div className="lg:col-span-2 bg-white rounded-[40px] border border-gray-100 shadow-sm p-10 flex items-center justify-between overflow-hidden relative group">
                         <div className="relative z-10 space-y-4">
                           <span className="inline-block px-4 py-1.5 bg-[#8178B1]/10 text-[#8178B1] rounded-full text-[10px] font-black uppercase tracking-widest border border-[#8178B1]/20">
-                            Prochaine rentrée scolaire
+                            {activeAnnee?.nom || 'Prochaine rentrée scolaire'}
                           </span>
                           <h2 className="text-4xl font-black text-[#1E293B] tracking-tight">
-                            Lundi 14 Octobre 2026
+                            {activeAnnee?.date_debut ? new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(activeAnnee.date_debut)) : 'Lundi 14 Octobre 2026'}
                           </h2>
                           <p className="text-gray-500 font-bold max-w-md">
-                            Préparez-vous pour le début de votre cursus en <span className="text-[#8178B1]">Système Informatique et Logiciel (SIL)</span>.
+                            Préparez-vous pour le début de votre cursus en <span className="text-[#8178B1]">{userFiliere?.nom || 'Votre Filière'}</span>.
                           </p>
                           <div className="flex gap-4 pt-2">
                              <button 
@@ -1742,26 +1797,29 @@ export default function App() {
                            <div className="flex justify-between items-center mb-10">
                               <div>
                                 <h3 className="text-xl font-black text-[#1E293B] tracking-tight">Matières de l'année</h3>
-                                <p className="text-gray-400 text-xs font-bold mt-1">Cursus SIL - Licence 1</p>
+                                <p className="text-gray-400 text-xs font-bold mt-1">Cursus {userFiliere?.code || ''} - {currentUser?.level || 'Licence 1'}</p>
                               </div>
                            </div>
                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              {[
-                                { name: 'Algorithmique & Structures de données', credits: 6, color: 'bg-blue-50 text-blue-500' },
-                                { name: 'Architecture des Systèmes', credits: 4, color: 'bg-purple-50 text-purple-500' },
-                                { name: 'Réseaux & Protocoles IP', credits: 5, color: 'bg-[#8178B1]/10 text-[#8178B1]' },
-                                { name: 'Mathématiques Discrètes', credits: 4, color: 'bg-orange-50 text-orange-500' }
-                              ].map((item, i) => (
+                              {(userFiliere?.matieres || [])
+                                .filter((m:any) => {
+                                    const userLevelNum = parseInt((currentUser?.level || '1').replace(/[^0-9]/g, '') || '1');
+                                    return m.annee_etude === userLevelNum;
+                                })
+                                .slice(0, 4).map((item:any, i:number) => (
                                 <div key={i} className="flex items-center gap-4 p-5 bg-gray-50/50 rounded-2xl border border-gray-50 hover:border-[#8178B1]/20 transition-all cursor-pointer group" onClick={() => setDashboardTab('Cursus')}>
-                                   <div className={`w-12 h-12 ${item.color} rounded-xl flex items-center justify-center shrink-0`}>
+                                   <div className={`w-12 h-12 bg-[#8178B1]/10 text-[#8178B1] rounded-xl flex items-center justify-center shrink-0`}>
                                       <ClipboardList size={20} />
                                    </div>
                                    <div className="flex-1">
-                                      <h4 className="text-sm font-bold text-[#1E293B] line-clamp-1">{item.name}</h4>
+                                      <h4 className="text-sm font-bold text-[#1E293B] line-clamp-1">{item.nom}</h4>
                                       <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{item.credits} Crédits</p>
                                    </div>
                                 </div>
                               ))}
+                              {(!userFiliere || !userFiliere.matieres || userFiliere.matieres.length === 0) && (
+                                  <p className="text-sm text-gray-400">Aucune matière configurée pour l'instant.</p>
+                              )}
                            </div>
                         </section>
                       </div>
@@ -1782,12 +1840,12 @@ export default function App() {
                             <div>
                                <div className="flex justify-between items-end mb-3">
                                   <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Payé</span>
-                                  <span className="text-2xl font-black text-[#8178B1]">25%</span>
+                                  <span className="text-2xl font-black text-[#8178B1]">{scolariteStats.percent}%</span>
                                </div>
                                <div className="w-full h-3 bg-gray-50 rounded-full overflow-hidden p-0.5 border border-gray-100">
                                   <motion.div
                                     initial={{ width: 0 }}
-                                    animate={{ width: "25%" }}
+                                    animate={{ width: `${scolariteStats.percent}%` }}
                                     transition={{ duration: 1, ease: "easeOut" }}
                                     className="h-full bg-[#8178B1] rounded-full"
                                   />
@@ -1796,13 +1854,13 @@ export default function App() {
                             <div className="grid grid-cols-2 gap-4 pb-2">
                                <div className="p-4 bg-gray-50 rounded-2xl">
                                   <p className="text-[9px] font-black text-gray-400">Effectué</p>
-                                  <p className="text-sm font-black text-[#1E293B]">325 000 F</p>
-                               </div>
-                               <div className="p-4 bg-gray-50 rounded-2xl">
-                                  <p className="text-[9px] font-black text-gray-400">Reste</p>
-                                  <p className="text-sm font-black text-orange-500">325 000 F</p>
-                               </div>
-                            </div>
+                                  <p className="text-sm font-black text-[#1E293B]">{scolariteStats.paid.toLocaleString()} F</p>
+                                </div>
+                                <div className="p-4 bg-gray-50 rounded-2xl">
+                                   <p className="text-[9px] font-black text-gray-400">Reste</p>
+                                   <p className="text-sm font-black text-orange-500">{scolariteStats.rest.toLocaleString()} F</p>
+                                </div>
+                             </div>
                           </div>
                         </section>
                       </div>
@@ -1815,12 +1873,24 @@ export default function App() {
                                  <Clock size={80} />
                               </div>
                               <h3 className="text-lg font-black mb-6 relative z-10">Activité Récente</h3>
-                              <div className="space-y-4 relative z-10">
-                                 <div className="flex gap-4 p-4 bg-white/10 rounded-2xl border border-white/5 hover:bg-white/15 transition-all">
-                                    <div className="text-[10px] font-black p-2 bg-white/20 rounded-lg h-fit text-[#8178B1]">MAR 25</div>
+                               <div className="space-y-4 relative z-10">
+                                 {statusStep >= 5 && (
+                                   <div 
+                                      className="flex gap-4 p-4 bg-white/10 rounded-2xl border border-white/5 hover:bg-white/15 transition-all cursor-pointer group/item"
+                                      onClick={() => setDashboardTab('Finances')}
+                                   >
+                                      <div className="text-[10px] font-black p-2 bg-white/20 rounded-lg h-fit text-[#8178B1]">DOC</div>
+                                      <div>
+                                         <p className="font-black text-sm">Frais d'inscription validés</p>
+                                         <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest group-hover/item:text-white transition-colors">Télécharger mon reçu</p>
+                                      </div>
+                                   </div>
+                                 )}
+                                 <div className="flex gap-4 p-4 bg-white/5 rounded-2xl border border-white/5">
+                                    <div className="text-[10px] font-black p-2 bg-white/10 rounded-lg h-fit text-white/40">CAL</div>
                                     <div>
-                                       <p className="font-black text-sm">Frais d'inscription validés</p>
-                                       <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest">Aujourd'hui à 09:24</p>
+                                       <p className="font-black text-sm text-white/60">Début des cours</p>
+                                       <p className="text-[10px] text-white/20 font-bold uppercase tracking-widest">{activeAnnee?.date_debut || 'Octobre 2026'}</p>
                                     </div>
                                  </div>
                               </div>
@@ -1967,82 +2037,69 @@ export default function App() {
                   <main className="max-w-[1200px] mx-auto space-y-10 mt-10">
                     <header className="space-y-2 px-2">
                        <div className="flex items-center gap-3 mb-2">
-                         <span className="px-3 py-1 bg-[#8178B1]/10 text-[#8178B1] rounded-full text-[10px] font-black uppercase tracking-[0.2em]">Année Académique 2026-2027</span>
+                         <span className="px-3 py-1 bg-[#8178B1]/10 text-[#8178B1] rounded-full text-[10px] font-black uppercase tracking-[0.2em]">{activeAnnee?.nom || "Période en cours"}</span>
                        </div>
                        <h2 className="text-4xl font-black text-[#1E293B] tracking-tight">Programme de Formation</h2>
-                       <p className="text-gray-400 font-bold max-w-2xl">Système Informatique et Logiciel (SIL) — Maquette pédagogique détaillée des semestres 1 et 2.</p>
+                       <p className="text-gray-400 font-bold max-w-2xl">{userFiliere?.nom || 'Non défini'} — Maquette pédagogique détaillée de votre cursus.</p>
                     </header>
 
                     <section className="space-y-12 pb-20">
-                      {[
-                        { 
-                          title: 'Semestre 1', 
-                          totalCredits: 30,
-                          subjects: [
-                            { code: 'ALP1104', name: 'Algorithme et Programmation', credits: 6, type: 'Specialty', ec: ['Informatique Fondamentale', 'Algorithmique', 'Langage C'] },
-                            { code: 'COM1100', name: 'Communication', credits: 4, type: 'General', ec: ['TEEO', 'Anglais'] },
-                            { code: 'ICE1102', name: 'Architecture et Mesures', credits: 5, type: 'Methodology', ec: ['Logique Combinatoire', 'Mesures électriques'] },
-                            { code: 'IWL1110', name: 'Administration Windows & Linux', credits: 6, type: 'Specialty', ec: ['Admin Windows', 'Admin Linux'] },
-                            { code: 'MAT1101', name: 'Mathématiques Générales', credits: 5, type: 'Fundamental', ec: ['Analyse', 'Algèbre'] },
-                            { code: 'TCM1103', name: 'Techno. Composants & Mesures', credits: 4, type: 'Fundamental', ec: ['Schéma Électriques', 'Circuits Électriques'] }
-                          ]
-                        },
-                        { 
-                          title: 'Semestre 2', 
-                          totalCredits: 30,
-                          subjects: [
-                            { code: 'ECO1209', name: 'Economie et Comptabilité', credits: 6, type: 'General', ec: ["Comptabilité générale", "Economie d'entreprise"] },
-                            { code: 'IGW1210', name: 'Génie Logiciel & Programmation Web', credits: 6, type: 'Specialty', ec: ['Programmation Web', 'Génie Logiciel'] },
-                            { code: 'PRJ1210', name: 'Projet Informatique', credits: 6, type: 'Methodology', ec: ["Projet d'informatique"] },
-                            { code: 'PRS1210', name: 'Probabilités et Statistiques', credits: 6, type: 'Methodology', ec: ['Probabilités', 'Statistiques'] },
-                            { code: 'SSI1207', name: "Système d'information", credits: 6, type: 'Specialty', ec: ['Bases de données', 'Mérise'] }
-                          ]
-                        }
-                      ].map((semestre, idx) => (
-                        <div key={idx} className="space-y-6">
-                           <div className="flex items-center justify-between px-2">
-                             <h3 className="text-2xl font-black text-[#1E293B] flex items-center gap-4">
-                               <span className="w-10 h-10 bg-[#1E1B4B] text-white rounded-2xl flex items-center justify-center text-sm">{idx + 1}</span>
-                               {semestre.title}
-                             </h3>
-                             <span className="text-xs font-black text-gray-400 uppercase tracking-widest">{semestre.totalCredits} Crédits ECTS</span>
-                           </div>
+                      {userFiliere ? (
+                        [1, 2, 3, 4, 5, 6]
+                          .filter(semestre => {
+                              const userLevelNum = parseInt((currentUser?.level || '1').replace(/[^0-9]/g, '') || '1');
+                              const minSem = (userLevelNum - 1) * 2 + 1;
+                              const maxSem = userLevelNum * 2;
+                              return semestre >= minSem && semestre <= maxSem;
+                          })
+                          .filter(semestre => userFiliere.matieres && userFiliere.matieres.some((m:any) => m.semestre === semestre)).map((semestre) => {
+                          const subjects = userFiliere.matieres.filter((m:any) => m.semestre === semestre);
+                          const totalCredits = subjects.reduce((sum:number, subj:any) => sum + subj.credits, 0);
+                          return (
+                            <div key={semestre} className="space-y-6">
+                               <div className="flex items-center justify-between px-2">
+                                 <h3 className="text-2xl font-black text-[#1E293B] flex items-center gap-4">
+                                   <span className="w-10 h-10 bg-[#1E1B4B] text-white rounded-2xl flex items-center justify-center text-sm">{semestre}</span>
+                                   Semestre {semestre}
+                                 </h3>
+                                 <span className="text-xs font-black text-gray-400 uppercase tracking-widest">{totalCredits} Crédits ECTS</span>
+                               </div>
 
-                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                              {semestre.subjects.map((subj, i) => {
-                                const typeColors = {
-                                  Fundamental: 'text-gray-900 border-gray-900 bg-gray-50',
-                                  Specialty: 'text-red-500 border-red-500 bg-red-50/50',
-                                  Methodology: 'text-blue-500 border-blue-500 bg-blue-50/50',
-                                  General: 'text-green-600 border-green-600 bg-green-50/50'
-                                };
-                                return (
-                                  <div key={i} className="group bg-white rounded-[32px] border border-gray-100 p-6 shadow-sm hover:shadow-xl hover:shadow-[#8178B1]/5 transition-all flex flex-col h-full">
-                                     <div className="flex justify-between items-start mb-4">
-                                        <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${typeColors[subj.type as keyof typeof typeColors]}`}>
-                                           {subj.code}
-                                        </span>
-                                        <span className="text-lg font-black text-[#8178B1]">{subj.credits}C</span>
-                                     </div>
-                                     <h4 className="text-[15px] font-black text-[#1E293B] mb-4 leading-tight group-hover:text-[#8178B1] transition-colors">
-                                        {subj.name}
-                                     </h4>
-                                     <div className="mt-auto space-y-2">
-                                        <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-3">Éléments Constitutifs (EC)</p>
-                                        <div className="flex flex-wrap gap-2">
-                                          {subj.ec.map((ec, k) => (
-                                            <span key={k} className="px-3 py-1.5 bg-gray-50 rounded-xl text-[11px] font-bold text-gray-500 border border-transparent group-hover:border-gray-100 transition-all">
-                                              {ec}
+                               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                  {subjects.map((subj:any, i:number) => {
+                                    return (
+                                      <div key={i} className="group bg-white rounded-[32px] border border-gray-100 p-6 shadow-sm hover:shadow-xl hover:shadow-[#8178B1]/5 transition-all flex flex-col h-full">
+                                         <div className="flex justify-between items-start mb-4">
+                                            <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border border-gray-900 bg-gray-50 text-gray-900`}>
+                                               {subj.code}
                                             </span>
-                                          ))}
-                                        </div>
-                                     </div>
-                                  </div>
-                                );
-                              })}
-                           </div>
-                        </div>
-                      ))}
+                                            <span className="text-lg font-black text-[#8178B1]">{subj.credits}C</span>
+                                         </div>
+                                         <h4 className="text-[15px] font-black text-[#1E293B] mb-4 leading-tight group-hover:text-[#8178B1] transition-colors">
+                                            {subj.nom}
+                                         </h4>
+                                         <div className="mt-auto space-y-2">
+                                            <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-3">Éléments Constitutifs (EC)</p>
+                                            <div className="flex flex-wrap gap-2">
+                                              {subj.elements_constitutifs && subj.elements_constitutifs.length > 0 ? subj.elements_constitutifs.map((ec:any, k:number) => (
+                                                <span key={k} className="px-3 py-1.5 bg-gray-50 rounded-xl text-[11px] font-bold text-gray-500 border border-transparent group-hover:border-gray-100 transition-all">
+                                                  {ec.nom}
+                                                </span>
+                                              )) : (
+                                                  <span className="text-xs italic text-gray-400">Aucun EC défini</span>
+                                              )}
+                                            </div>
+                                         </div>
+                                      </div>
+                                    );
+                                  })}
+                               </div>
+                            </div>
+                          );
+                        })
+                      ) : (
+                          <p className="text-gray-500 italic p-6">Aucun programme disponible pour votre profil. Veuillez patienter ou contacter l'administration.</p>
+                      )}
                     </section>
                   </main>
                 )}

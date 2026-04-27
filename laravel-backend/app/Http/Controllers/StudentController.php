@@ -38,7 +38,7 @@ class StudentController extends Controller
         ]);
 
         // Map frontend fields to DB fields
-        $user->fill([
+        $dataToUpdate = [
             'firstname' => $validated['firstname'] ?? $user->firstname,
             'lastname' => $validated['lastname'] ?? $user->lastname,
             'phone' => $validated['phone'] ?? $user->phone,
@@ -62,7 +62,29 @@ class StudentController extends Controller
             'parent_mother_job' => $validated['autreInfoMere'] ?? $user->parent_mother_job,
             'registration_complete' => true,
             'status_step' => 1,
-        ]);
+        ];
+
+        // --- Automatiquement lier le filiere_id ---
+        if (isset($validated['filiere'])) {
+            $filiereStr = strtolower($validated['filiere']);
+            $foundFiliere = null;
+
+            if (str_contains($filiereStr, 'abb') || str_contains($filiereStr, 'bio')) {
+                $foundFiliere = \App\Models\Filiere::where('nom', 'like', '%Analyses Biologiques%')->first();
+            } elseif (str_contains($filiereStr, 'sil') || str_contains($filiereStr, 'info')) {
+                $foundFiliere = \App\Models\Filiere::where('nom', 'like', '%Système Informatique%')->first();
+            } elseif (str_contains($filiereStr, 'btp') || str_contains($filiereStr, 'travaux')) {
+                $foundFiliere = \App\Models\Filiere::where('nom', 'like', '%Bâtiment%')->first();
+            } else {
+                $foundFiliere = \App\Models\Filiere::where('nom', 'like', '%' . $validated['filiere'] . '%')->first();
+            }
+
+            if ($foundFiliere) {
+                $dataToUpdate['filiere_id'] = $foundFiliere->id;
+            }
+        }
+
+        $user->fill($dataToUpdate);
 
         // Handle File Uploads
         if ($request->hasFile('acteNaissance')) {
@@ -116,6 +138,7 @@ class StudentController extends Controller
     }
     public function reEditProfile(Request $request)
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
         $user->update([
             'registration_complete' => false,
@@ -126,6 +149,7 @@ class StudentController extends Controller
     public function updateStatusStep(Request $request)
     {
         $request->validate(['step' => 'required|integer']);
+        /** @var \App\Models\User $user */
         $user = Auth::user();
         $user->update(['status_step' => $request->step]);
         return response()->json(['message' => 'Statut mis à jour']);

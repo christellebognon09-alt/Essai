@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AcademiqueController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -52,5 +53,35 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/news', [AdminController::class, 'getNews']);
         Route::post('/news', [AdminController::class, 'storeNews']);
         Route::delete('/news/{id}', [AdminController::class, 'deleteNews']);
+    });
+
+    // Structure Académique
+    Route::prefix('academique')->group(function () {
+        Route::get('/departements', [AcademiqueController::class, 'getDepartements']);
+        Route::post('/departements', [AcademiqueController::class, 'storeDepartement']);
+        Route::delete('/departements/{id}', [AcademiqueController::class, 'destroyDepartement']);
+        
+        Route::get('/filieres', [AcademiqueController::class, 'getFilieres']);
+        Route::get('/filieres/{id}', [AcademiqueController::class, 'getFiliere']);
+        Route::post('/filieres', [AcademiqueController::class, 'storeFiliere']);
+        Route::delete('/filieres/{id}', [AcademiqueController::class, 'destroyFiliere']);
+        
+        Route::get('/matieres', [AcademiqueController::class, 'getMatieres']);
+        Route::post('/matieres', [AcademiqueController::class, 'storeMatiere']);
+        
+        Route::post('/elements', [AcademiqueController::class, 'storeElementConstitutif']);
+        
+        Route::get('/annees', [AcademiqueController::class, 'getAnnees']);
+        Route::post('/annees', [AcademiqueController::class, 'storeAnnee']);
+        Route::put('/annees/{id}', [AcademiqueController::class, 'updateAnnee']);
+        Route::post('/annees/{id}/activer', [AcademiqueController::class, 'activateAnnee']);
+    });
+
+    // Finances
+    Route::prefix('finances')->group(function () {
+        Route::get('/configs', [\App\Http\Controllers\FinancesController::class, 'getConfigs']);
+        Route::post('/configs', [\App\Http\Controllers\FinancesController::class, 'storeConfig']);
+        Route::post('/tariffs', [\App\Http\Controllers\FinancesController::class, 'storeTariff']);
+        Route::delete('/tariffs/{id}', [\App\Http\Controllers\FinancesController::class, 'deleteTariff']);
     });
 });

@@ -25,7 +25,8 @@ import {
     AlertCircle,
     ClipboardCheck,
     Save,
-    Eye
+    Eye,
+    PlusCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -66,8 +67,15 @@ interface StudentTracking {
     status: 'Payé' | 'Partiel' | 'Impayé';
 }
 
+interface ExtraFrais {
+    label: string;
+    amount: number;
+    deadline: string;
+}
+
 interface FiliereFees {
     id: string;
+    filiere_id: number;
     name: string;
     inscription: number;
     inscriptionDeadline: string;
@@ -81,6 +89,7 @@ interface FiliereFees {
     fraisStageDeadline: string;
     fraisDossier: number;
     fraisDossierDeadline: string;
+    extraFrais: ExtraFrais[];
 }
 
 interface AcademicTariff {
@@ -95,18 +104,18 @@ const MOCK_TRANSACTIONS: Transaction[] = [];
 const MOCK_STUDENTS: StudentTracking[] = [];
 
 const INITIAL_FILIERE_FEES: FiliereFees[] = [
-    { id: '1', name: 'Analyses Biologiques et Biochimiques', inscription: 50000, inscriptionDeadline: '2024-09-30', tranche1: 300000, tranche1Deadline: '2024-11-15', tranche2: 300000, tranche2Deadline: '2025-01-15', tranche3: 150000, tranche3Deadline: '2025-04-15', fraisStage: 150000, fraisStageDeadline: '2025-06-01', fraisDossier: 10000, fraisDossierDeadline: '2024-09-15' },
-    { id: '2', name: 'Bâtiments et Travaux Publics', inscription: 50000, inscriptionDeadline: '2024-09-30', tranche1: 250000, tranche1Deadline: '2024-11-15', tranche2: 250000, tranche2Deadline: '2025-01-15', tranche3: 100000, tranche3Deadline: '2025-04-15', fraisStage: 50000, fraisStageDeadline: '2025-06-01', fraisDossier: 10000, fraisDossierDeadline: '2024-09-15' },
-    { id: '3', name: 'Géomètre Topographe', inscription: 50000, inscriptionDeadline: '2024-09-30', tranche1: 250000, tranche1Deadline: '2024-11-15', tranche2: 250000, tranche2Deadline: '2025-01-15', tranche3: 100000, tranche3Deadline: '2025-04-15', fraisStage: 50000, fraisStageDeadline: '2025-06-01', fraisDossier: 10000, fraisDossierDeadline: '2024-09-15' },
-    { id: '4', name: 'Génie Electrique et Energies Renouvelables', inscription: 50000, inscriptionDeadline: '2024-09-30', tranche1: 250000, tranche1Deadline: '2024-11-15', tranche2: 250000, tranche2Deadline: '2025-01-15', tranche3: 100000, tranche3Deadline: '2025-04-15', fraisStage: 50000, fraisStageDeadline: '2025-06-01', fraisDossier: 10000, fraisDossierDeadline: '2024-09-15' },
-    { id: '5', name: 'Système Informatique et Logiciel', inscription: 50000, inscriptionDeadline: '2024-09-30', tranche1: 300000, tranche1Deadline: '2024-11-15', tranche2: 300000, tranche2Deadline: '2025-01-15', tranche3: 150000, tranche3Deadline: '2025-04-15', fraisStage: 150000, fraisStageDeadline: '2025-06-01', fraisDossier: 10000, fraisDossierDeadline: '2024-09-15' },
-    { id: '6', name: 'Banque Finance Assurance', inscription: 50000, inscriptionDeadline: '2024-09-30', tranche1: 250000, tranche1Deadline: '2024-11-15', tranche2: 250000, tranche2Deadline: '2025-01-15', tranche3: 100000, tranche3Deadline: '2025-04-15', fraisStage: 50000, fraisStageDeadline: '2025-06-01', fraisDossier: 10000, fraisDossierDeadline: '2024-09-15' },
-    { id: '7', name: 'Finance Comptabilité Audit', inscription: 50000, inscriptionDeadline: '2024-09-30', tranche1: 250000, tranche1Deadline: '2024-11-15', tranche2: 250000, tranche2Deadline: '2025-01-15', tranche3: 100000, tranche3Deadline: '2025-04-15', fraisStage: 50000, fraisStageDeadline: '2025-06-01', fraisDossier: 10000, fraisDossierDeadline: '2024-09-15' },
-    { id: '8', name: 'Gestion des Ressources Humaines', inscription: 50000, inscriptionDeadline: '2024-09-30', tranche1: 250000, tranche1Deadline: '2024-11-15', tranche2: 250000, tranche2Deadline: '2025-01-15', tranche3: 100000, tranche3Deadline: '2025-04-15', fraisStage: 50000, fraisStageDeadline: '2025-06-01', fraisDossier: 10000, fraisDossierDeadline: '2024-09-15' },
-    { id: '9', name: 'Marketing Communication Commerce', inscription: 50000, inscriptionDeadline: '2024-09-30', tranche1: 250000, tranche1Deadline: '2024-11-15', tranche2: 250000, tranche2Deadline: '2025-01-15', tranche3: 100000, tranche3Deadline: '2025-04-15', fraisStage: 50000, fraisStageDeadline: '2025-06-01', fraisDossier: 10000, fraisDossierDeadline: '2024-09-15' },
-    { id: '10', name: 'Transport logistique', inscription: 50000, inscriptionDeadline: '2024-09-30', tranche1: 250000, tranche1Deadline: '2024-11-15', tranche2: 250000, tranche2Deadline: '2025-01-15', tranche3: 100000, tranche3Deadline: '2025-04-15', fraisStage: 50000, fraisStageDeadline: '2025-06-01', fraisDossier: 10000, fraisDossierDeadline: '2024-09-15' },
-    { id: '11', name: 'Hôtellerie et Tourisme', inscription: 50000, inscriptionDeadline: '2024-09-30', tranche1: 250000, tranche1Deadline: '2024-11-15', tranche2: 250000, tranche2Deadline: '2025-01-15', tranche3: 100000, tranche3Deadline: '2025-04-15', fraisStage: 50000, fraisStageDeadline: '2025-06-01', fraisDossier: 10000, fraisDossierDeadline: '2024-09-15' },
-    { id: '12', name: 'Génie de l’Environnement – Traitement des déchets et des eaux', inscription: 50000, inscriptionDeadline: '2024-09-30', tranche1: 250000, tranche1Deadline: '2024-11-15', tranche2: 250000, tranche2Deadline: '2025-01-15', tranche3: 100000, tranche3Deadline: '2025-04-15', fraisStage: 50000, fraisStageDeadline: '2025-06-01', fraisDossier: 10000, fraisDossierDeadline: '2024-09-15' }
+    { id: '1', filiere_id: 1, name: 'Analyses Biologiques et Biochimiques', inscription: 50000, inscriptionDeadline: '2024-09-30', tranche1: 300000, tranche1Deadline: '2024-11-15', tranche2: 300000, tranche2Deadline: '2025-01-15', tranche3: 150000, tranche3Deadline: '2025-04-15', fraisStage: 150000, fraisStageDeadline: '2025-06-01', fraisDossier: 10000, fraisDossierDeadline: '2024-09-15', extraFrais: [] },
+    { id: '2', filiere_id: 2, name: 'Bâtiments et Travaux Publics', inscription: 50000, inscriptionDeadline: '2024-09-30', tranche1: 250000, tranche1Deadline: '2024-11-15', tranche2: 250000, tranche2Deadline: '2025-01-15', tranche3: 100000, tranche3Deadline: '2025-04-15', fraisStage: 50000, fraisStageDeadline: '2025-06-01', fraisDossier: 10000, fraisDossierDeadline: '2024-09-15', extraFrais: [] },
+    { id: '3', filiere_id: 3, name: 'Géomètre Topographe', inscription: 50000, inscriptionDeadline: '2024-09-30', tranche1: 250000, tranche1Deadline: '2024-11-15', tranche2: 250000, tranche2Deadline: '2025-01-15', tranche3: 100000, tranche3Deadline: '2025-04-15', fraisStage: 50000, fraisStageDeadline: '2025-06-01', fraisDossier: 10000, fraisDossierDeadline: '2024-09-15', extraFrais: [] },
+    { id: '4', filiere_id: 4, name: 'Génie Electrique et Energies Renouvelables', inscription: 50000, inscriptionDeadline: '2024-09-30', tranche1: 250000, tranche1Deadline: '2024-11-15', tranche2: 250000, tranche2Deadline: '2025-01-15', tranche3: 100000, tranche3Deadline: '2025-04-15', fraisStage: 50000, fraisStageDeadline: '2025-06-01', fraisDossier: 10000, fraisDossierDeadline: '2024-09-15', extraFrais: [] },
+    { id: '5', filiere_id: 5, name: 'Système Informatique et Logiciel', inscription: 50000, inscriptionDeadline: '2024-09-30', tranche1: 300000, tranche1Deadline: '2024-11-15', tranche2: 300000, tranche2Deadline: '2025-01-15', tranche3: 150000, tranche3Deadline: '2025-04-15', fraisStage: 150000, fraisStageDeadline: '2025-06-01', fraisDossier: 10000, fraisDossierDeadline: '2024-09-15', extraFrais: [] },
+    { id: '6', filiere_id: 6, name: 'Banque Finance Assurance', inscription: 50000, inscriptionDeadline: '2024-09-30', tranche1: 250000, tranche1Deadline: '2024-11-15', tranche2: 250000, tranche2Deadline: '2025-01-15', tranche3: 100000, tranche3Deadline: '2025-04-15', fraisStage: 50000, fraisStageDeadline: '2025-06-01', fraisDossier: 10000, fraisDossierDeadline: '2024-09-15', extraFrais: [] },
+    { id: '7', filiere_id: 7, name: 'Finance Comptabilité Audit', inscription: 50000, inscriptionDeadline: '2024-09-30', tranche1: 250000, tranche1Deadline: '2024-11-15', tranche2: 250000, tranche2Deadline: '2025-01-15', tranche3: 100000, tranche3Deadline: '2025-04-15', fraisStage: 50000, fraisStageDeadline: '2025-06-01', fraisDossier: 10000, fraisDossierDeadline: '2024-09-15', extraFrais: [] },
+    { id: '8', filiere_id: 8, name: 'Gestion des Ressources Humaines', inscription: 50000, inscriptionDeadline: '2024-09-30', tranche1: 250000, tranche1Deadline: '2024-11-15', tranche2: 250000, tranche2Deadline: '2025-01-15', tranche3: 100000, tranche3Deadline: '2025-04-15', fraisStage: 50000, fraisStageDeadline: '2025-06-01', fraisDossier: 10000, fraisDossierDeadline: '2024-09-15', extraFrais: [] },
+    { id: '9', filiere_id: 9, name: 'Marketing Communication Commerce', inscription: 50000, inscriptionDeadline: '2024-09-30', tranche1: 250000, tranche1Deadline: '2024-11-15', tranche2: 250000, tranche2Deadline: '2025-01-15', tranche3: 100000, tranche3Deadline: '2025-04-15', fraisStage: 50000, fraisStageDeadline: '2025-06-01', fraisDossier: 10000, fraisDossierDeadline: '2024-09-15', extraFrais: [] },
+    { id: '10', filiere_id: 10, name: 'Transport logistique', inscription: 50000, inscriptionDeadline: '2024-09-30', tranche1: 250000, tranche1Deadline: '2024-11-15', tranche2: 250000, tranche2Deadline: '2025-01-15', tranche3: 100000, tranche3Deadline: '2025-04-15', fraisStage: 50000, fraisStageDeadline: '2025-06-01', fraisDossier: 10000, fraisDossierDeadline: '2024-09-15', extraFrais: [] },
+    { id: '11', filiere_id: 11, name: 'Hôtellerie et Tourisme', inscription: 50000, inscriptionDeadline: '2024-09-30', tranche1: 250000, tranche1Deadline: '2024-11-15', tranche2: 250000, tranche2Deadline: '2025-01-15', tranche3: 100000, tranche3Deadline: '2025-04-15', fraisStage: 50000, fraisStageDeadline: '2025-06-01', fraisDossier: 10000, fraisDossierDeadline: '2024-09-15', extraFrais: [] },
+    { id: '12', filiere_id: 12, name: 'Génie de l’Environnement – Traitement des déchets et des eaux', inscription: 50000, inscriptionDeadline: '2024-09-30', tranche1: 250000, tranche1Deadline: '2024-11-15', tranche2: 250000, tranche2Deadline: '2025-01-15', tranche3: 100000, tranche3Deadline: '2025-04-15', fraisStage: 50000, fraisStageDeadline: '2025-06-01', fraisDossier: 10000, fraisDossierDeadline: '2024-09-15', extraFrais: [] }
 ];
 
 const INITIAL_ACADEMIC_TARIFFS: AcademicTariff[] = [
@@ -370,15 +379,147 @@ export default function DashboardComptable() {
             .catch(err => console.error('Error fetching students:', err));
     };
 
+    const fetchFinanceConfigs = () => {
+        const token = localStorage.getItem('token');
+        fetch('/api/finances/configs', {
+            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log("Finance data received:", data);
+            if (data && data.configs) {
+                const formatted = data.configs.map((c: any) => ({
+                    id: c.id?.toString() || Math.random().toString(),
+                    filiere_id: c.filiere_id,
+                    name: c.filiere?.nom || 'Filière inconnue',
+                    inscription: c.inscription || 0,
+                    inscriptionDeadline: c.inscription_deadline || '',
+                    tranche1: c.tranche1 || 0,
+                    tranche1Deadline: c.tranche1_deadline || '',
+                    tranche2: c.tranche2 || 0,
+                    tranche2Deadline: c.tranche2_deadline || '',
+                    tranche3: c.tranche3 || 0,
+                    tranche3Deadline: c.tranche3_deadline || '',
+                    fraisStage: c.frais_stage || 0,
+                    fraisStageDeadline: c.frais_stage_deadline || '',
+                    fraisDossier: c.frais_dossier || 0,
+                    fraisDossierDeadline: c.frais_dossier_deadline || '',
+                    extraFrais: (data.extra_frais || []).filter((e: any) => e.filiere_id === c.filiere_id).map((e: any) => ({
+                        label: e.label,
+                        amount: e.amount,
+                        deadline: e.deadline || ''
+                    }))
+                }));
+                console.log("Formatted filiere fees:", formatted);
+                setFiliereFees(formatted);
+            }
+            if (data && data.tariffs) {
+                setAcademicTariffs(data.tariffs);
+            }
+        })
+        .catch(err => {
+            console.error("Error fetching finance configs:", err);
+        });
+    };
+
     useEffect(() => {
         fetchStudents();
+        fetchFinanceConfigs();
         const interval = setInterval(fetchStudents, 10000); // Polling for new validations
         return () => clearInterval(interval);
     }, []);
 
-    const updateAcademicTariff = (id: string, price: string) => {
-        const numPrice = parseInt(price) || 0;
-        setAcademicTariffs(prev => prev.map(t => t.id === id ? { ...t, price: numPrice } : t));
+    const updateAcademicTariff = (id: string, field: 'label' | 'price', value: string) => {
+        setAcademicTariffs(prev => prev.map(t => t.id === id ? { ...t, [field]: field === 'price' ? parseInt(value) || 0 : value } : t));
+    };
+
+    const handleSaveTariff = (tariff: AcademicTariff) => {
+        const token = localStorage.getItem('token');
+        fetch('/api/finances/tariffs', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(tariff)
+        })
+        .then(() => fetchFinanceConfigs())
+        .catch(err => alert("Erreur lors de l'enregistrement du tarif"));
+    };
+
+    const handleDeleteTariff = (id: string) => {
+        if (!confirm("Supprimer ce tarif ?")) return;
+        const token = localStorage.getItem('token');
+        fetch(`/api/finances/tariffs/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        })
+        .then(() => fetchFinanceConfigs())
+        .catch(err => alert("Erreur lors de la suppression"));
+    };
+
+    const handleAddTariff = () => {
+        setAcademicTariffs(prev => [...prev, { id: '', label: 'Nouveau document', price: 0 }]);
+    };
+
+    const handleSaveFinanceConfig = async () => {
+        if (!selectedFiliere) return;
+        const token = localStorage.getItem('token');
+        const payload = {
+            filiere_id: selectedFiliere.filiere_id,
+            inscription: selectedFiliere.inscription,
+            inscription_deadline: selectedFiliere.inscriptionDeadline,
+            tranche1: selectedFiliere.tranche1,
+            tranche1_deadline: selectedFiliere.tranche1Deadline,
+            tranche2: selectedFiliere.tranche2,
+            tranche2_deadline: selectedFiliere.tranche2Deadline,
+            tranche3: selectedFiliere.tranche3,
+            tranche3_deadline: selectedFiliere.tranche3Deadline,
+            frais_stage: selectedFiliere.fraisStage,
+            frais_stage_deadline: selectedFiliere.fraisStageDeadline,
+            frais_dossier: selectedFiliere.fraisDossier,
+            frais_dossier_deadline: selectedFiliere.fraisDossierDeadline,
+            extra_frais: selectedFiliere.extraFrais
+        };
+
+        const res = await fetch('/api/finances/configs', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+            alert("Configurations financières enregistrées !");
+            fetchFinanceConfigs();
+            setSelectedFiliere(null);
+        }
+    };
+
+    const addExtraFee = () => {
+        if (!selectedFiliere) return;
+        const updated = {
+            ...selectedFiliere,
+            extraFrais: [...(selectedFiliere.extraFrais || []), { label: 'Nouveaux frais', amount: 0, deadline: '' }]
+        };
+        setSelectedFiliere(updated);
+    };
+
+    const updateExtraFee = (index: number, field: keyof ExtraFrais, value: string) => {
+        if (!selectedFiliere) return;
+        const updatedExtra = [...selectedFiliere.extraFrais];
+        updatedExtra[index] = { ...updatedExtra[index], [field]: field === 'amount' ? parseInt(value) || 0 : value };
+        setSelectedFiliere({ ...selectedFiliere, extraFrais: updatedExtra });
+    };
+
+    const removeExtraFee = (index: number) => {
+        if (!selectedFiliere) return;
+        const updatedExtra = selectedFiliere.extraFrais.filter((_, i) => i !== index);
+        setSelectedFiliere({ ...selectedFiliere, extraFrais: updatedExtra });
     };
 
     const handleGenerateMatricule = () => {
@@ -561,7 +702,7 @@ export default function DashboardComptable() {
                                     <div className="space-y-3">
                                         <div className="flex justify-between items-center">
                                             <span className="text-[9px] font-black text-gray-400 uppercase">Total</span>
-                                            <span className="text-sm font-black text-[#8178BB]">{(f.inscription + f.tranche1 + f.tranche2 + f.tranche3 + f.fraisStage + f.fraisDossier).toLocaleString()} F</span>
+                                            <span className="text-sm font-black text-[#8178BB]">{(f.inscription + f.tranche1 + f.tranche2 + f.tranche3 + f.fraisStage + f.fraisDossier + (f.extraFrais || []).reduce((acc, curr) => acc + curr.amount, 0)).toLocaleString()} F</span>
                                         </div>
                                         <button 
                                             onClick={() => {
@@ -575,6 +716,13 @@ export default function DashboardComptable() {
                                     </div>
                                 </Card>
                             ))}
+                            {filiereFees.length === 0 && (
+                                <div className="col-span-full py-20 flex flex-col items-center justify-center text-center bg-white rounded-[40px] border border-dashed border-gray-200">
+                                    <AlertCircle size={48} className="text-gray-300 mb-4" />
+                                    <h4 className="text-lg font-black text-gray-400 uppercase tracking-widest">Aucune filière configurée</h4>
+                                    <p className="text-xs text-gray-400 mt-2 max-w-xs">Les configurations financières s'afficheront ici une fois les filières créées dans le dashboard Admin.</p>
+                                </div>
+                            )}
                         </div>
 
                         {selectedFiliere && (
@@ -621,6 +769,54 @@ export default function DashboardComptable() {
                                                     </div>
                                                 </div>
                                             ))}
+
+                                            {/* Dynamic Extra Fees */}
+                                            {(selectedFiliere.extraFrais || []).map((fee, index) => (
+                                                <div key={`extra-${index}`} className="p-5 bg-[#F3F2F9]/50 rounded-2xl border border-transparent hover:border-[#8178BB]/10 transition-all space-y-4">
+                                                    <div className="flex items-center justify-between">
+                                                        <input 
+                                                            type="text"
+                                                            value={fee.label}
+                                                            onChange={(e) => updateExtraFee(index, 'label', e.target.value)}
+                                                            className="text-[10px] font-black text-[#8178BB] uppercase tracking-[0.1em] bg-transparent border-none outline-none focus:ring-0 w-full"
+                                                            placeholder="Nom du frais"
+                                                        />
+                                                        <button onClick={() => removeExtraFee(index)} className="text-red-400 hover:text-red-600 transition-colors">
+                                                            <X size={14} />
+                                                        </button>
+                                                    </div>
+                                                    <div className="grid grid-cols-2 gap-4">
+                                                        <div className="space-y-1.5">
+                                                            <label className="text-[8px] font-black text-gray-400 uppercase">Montant (F)</label>
+                                                            <input 
+                                                                type="number" 
+                                                                value={fee.amount} 
+                                                                onChange={(e) => updateExtraFee(index, 'amount', e.target.value)}
+                                                                className="w-full bg-white border-none rounded-xl py-2 px-3 text-xs font-black text-gray-800 outline-none focus:ring-1 focus:ring-[#8178BB]/40"
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-1.5">
+                                                            <label className="text-[8px] font-black text-gray-400 uppercase">Délai limite</label>
+                                                            <input 
+                                                                type="date" 
+                                                                value={fee.deadline} 
+                                                                onChange={(e) => updateExtraFee(index, 'deadline', e.target.value)}
+                                                                className="w-full bg-white border-none rounded-xl py-2 px-3 text-xs font-black text-gray-800 outline-none focus:ring-1 focus:ring-[#8178BB]/40"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+
+                                            <button 
+                                                onClick={addExtraFee}
+                                                className="p-5 border-2 border-dashed border-[#F3F2F9] rounded-2xl flex flex-col items-center justify-center gap-2 text-gray-400 hover:border-[#8178BB]/20 hover:text-[#8178BB] transition-all group"
+                                            >
+                                                <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-[#8178BB]/10 transition-colors">
+                                                    <PlusCircle size={16} />
+                                                </div>
+                                                <span className="text-[10px] font-black uppercase tracking-widest">Ajouter des frais</span>
+                                            </button>
                                         </div>
 
                                         <div className="pt-6 border-t border-gray-50 flex justify-between items-center">
@@ -629,7 +825,7 @@ export default function DashboardComptable() {
                                             </p>
                                             <div className="flex gap-3">
                                                 <button onClick={() => setSelectedFiliere(null)} className="px-6 py-3 font-black text-[9px] uppercase tracking-widest text-gray-400 hover:text-gray-600 transition-colors">Annuler</button>
-                                                <button onClick={() => setSelectedFiliere(null)} className="bg-[#8178BB] text-white px-8 py-3 rounded-2xl font-black text-[9px] uppercase tracking-widest shadow-lg shadow-[#8178BB]/20 hover:bg-[#7168A0] transition-all">Enregistrer les délais</button>
+                                                <button onClick={handleSaveFinanceConfig} className="bg-[#8178BB] text-white px-8 py-3 rounded-2xl font-black text-[9px] uppercase tracking-widest shadow-lg shadow-[#8178BB]/20 hover:bg-[#7168A0] transition-all">Enregistrer les délais</button>
                                             </div>
                                         </div>
                                     </div>
@@ -639,19 +835,45 @@ export default function DashboardComptable() {
 
                         {/* Academic Documents Tariffs */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <Card title="Tarifs Actes Académiques" subtitle="Documents officiels et certificats">
+                            <Card 
+                                title="Tarifs Actes Académiques" 
+                                subtitle="Documents officiels et certificats"
+                                action={
+                                    <button onClick={handleAddTariff} className="w-8 h-8 bg-[#8178BB]/10 text-[#8178BB] rounded-xl flex items-center justify-center hover:bg-[#8178BB] hover:text-white transition-all shadow-sm">
+                                        <PlusCircle size={18} />
+                                    </button>
+                                }
+                            >
                                 <div className="space-y-4">
                                     {academicTariffs.map((t) => (
-                                        <div key={t.id} className="flex items-center justify-between p-4 bg-[#F3F2F9]/50 rounded-2xl border border-transparent hover:border-[#8178BB]/10 transition-all">
-                                            <span className="text-[11px] font-black text-gray-700 uppercase tracking-tight">{t.label}</span>
-                                            <div className="flex items-center gap-4">
+                                        <div key={t.id} className="flex flex-col gap-4 p-4 bg-[#F3F2F9]/50 rounded-2xl border border-transparent hover:border-[#8178BB]/10 transition-all">
+                                            <div className="flex items-center justify-between gap-4">
                                                 <input 
-                                                    type="number" 
-                                                    value={t.price} 
-                                                    onChange={(e) => updateAcademicTariff(t.id, e.target.value)}
-                                                    className="w-24 bg-white border-none rounded-xl py-2 px-3 text-right text-xs font-black text-[#8178BB] outline-none"
+                                                    type="text"
+                                                    value={t.label}
+                                                    onChange={(e) => updateAcademicTariff(t.id, 'label', e.target.value)}
+                                                    className="flex-1 text-[11px] font-black text-gray-700 uppercase tracking-tight bg-transparent border-none outline-none"
                                                 />
-                                                <span className="text-[10px] font-black text-gray-400 uppercase">F CFA</span>
+                                                <button onClick={() => handleDeleteTariff(t.id)} className="text-gray-300 hover:text-red-500 transition-colors">
+                                                    <X size={14} />
+                                                </button>
+                                            </div>
+                                            <div className="flex items-center justify-between gap-4">
+                                                <div className="flex items-center gap-2">
+                                                    <input 
+                                                        type="number" 
+                                                        value={t.price} 
+                                                        onChange={(e) => updateAcademicTariff(t.id, 'price', e.target.value)}
+                                                        className="w-24 bg-white border-none rounded-xl py-2 px-3 text-right text-xs font-black text-[#8178BB] outline-none"
+                                                    />
+                                                    <span className="text-[10px] font-black text-gray-400 uppercase">F CFA</span>
+                                                </div>
+                                                <button 
+                                                    onClick={() => handleSaveTariff(t)}
+                                                    className="px-4 py-2 bg-emerald-500 text-white rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-emerald-600 transition-colors shadow-lg shadow-emerald-500/10"
+                                                >
+                                                    Enregistrer
+                                                </button>
                                             </div>
                                         </div>
                                     ))}

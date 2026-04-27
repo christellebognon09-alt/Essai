@@ -155,6 +155,13 @@ const StatusBadge = ({ status }: { status: string }) => {
 export default function DashboardAdmin() {
     const [activePage, setActivePage] = useState<Page>('dashboard');
     const [news, setNews] = useState<NewsArticle[]>([]);
+    const [departements, setDepartements] = useState<any[]>([]);
+    const [annees, setAnnees] = useState<any[]>([]);
+    const [activeAnnee, setActiveAnnee] = useState<any>(null);
+    const [selectedDept, setSelectedDept] = useState<any>(null);
+    const [selectedFiliere, setSelectedFiliere] = useState<any>(null);
+    const [expandedSemester, setExpandedSemester] = useState<number | null>(null);
+    const [editAnneeData, setEditAnneeData] = useState<{id?: number, nom: string, date_debut: string, date_fin: string}>({nom: '', date_debut: '', date_fin: ''});
     const [newArticle, setNewArticle] = useState({ title: '', content: '', description: '', image_url: '', category: 'Événement' });
     const [editingId, setEditingId] = useState<number | null>(null);
     const [isPostingNews, setIsPostingNews] = useState(false);
@@ -193,21 +200,232 @@ export default function DashboardAdmin() {
         }
     };
 
-    // Fetch news on mount or when page changes to communication
     React.useEffect(() => {
+        const token = localStorage.getItem('token');
+        const headers = { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' };
+        
         if (activePage === 'communication') {
-            const token = localStorage.getItem('token');
-            fetch('/api/news', {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json'
-                }
-            })
+            fetch('/api/news', { headers })
                 .then(res => res.json())
                 .then(data => setNews(Array.isArray(data) ? data : []))
                 .catch(err => console.error('Error fetching news:', err));
         }
+        
+        if (activePage === 'structure') {
+            fetch('/api/academique/departements', { headers })
+                .then(res => res.json())
+                .then(data => setDepartements(Array.isArray(data) ? data : []))
+                .catch(err => console.error('Error fetching departements:', err));
+
+            fetch('/api/academique/annees', { headers })
+                .then(res => res.json())
+                .then(data => {
+                    const anneesArray = Array.isArray(data) ? data : [];
+                    setAnnees(anneesArray);
+                    const active = anneesArray.find((a: any) => a.est_active) || anneesArray[0] || null;
+                    setActiveAnnee(active);
+                    if (active) {
+                        setEditAnneeData({
+                            id: active.id,
+                            nom: active.nom,
+                            date_debut: active.date_debut.split('T')[0],
+                            date_fin: active.date_fin.split('T')[0]
+                        });
+                    }
+                })
+                .catch(err => console.error('Error fetching annees:', err));
+        }
     }, [activePage]);
+
+    // Synchronisation initiale du state
+    React.useEffect(() => {
+        if (activeAnnee && !editAnneeData.id) {
+            setEditAnneeData({
+                id: activeAnnee.id,
+                nom: activeAnnee.nom,
+                date_debut: activeAnnee.date_debut.split('T')[0],
+                date_fin: activeAnnee.date_fin ? activeAnnee.date_fin.split('T')[0] : ''
+            });
+        }
+    }, [activeAnnee, editAnneeData.id]);
+
+    const handleUpdateAnnee = async () => {
+        if (!editAnneeData.id) return;
+        const token = localStorage.getItem('token');
+        const res = await fetch(`/api/academique/annees/${editAnneeData.id}`, {
+            method: 'PUT',
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify(editAnneeData)
+        });
+        if (res.ok) {
+            const data = await res.json();
+            if (activeAnnee?.id === data.annee.id) {
+                setActiveAnnee(data.annee);
+            }
+            setAnnees(annees.map((a:any) => a.id === data.annee.id ? data.annee : a));
+            alert("Période mise à jour avec succès !");
+        }
+    };
+
+    const handleAddDepartement = async () => {
+        const nom = prompt("Nom de la faculté/département :");
+        if (!nom) return;
+        const token = localStorage.getItem('token');
+        const res = await fetch('/api/academique/departements', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ nom })
+        });
+        if (res.ok) {
+            const data = await res.json();
+            setDepartements([...departements, data.departement]);
+        }
+    };
+
+    const handleAddAnnee = async () => {
+        const token = localStorage.getItem('token');
+        const res = await fetch('/api/academique/annees', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ nom: "Nouvelle Période", date_debut: new Date().toISOString().split('T')[0], est_active: false })
+        });
+        if (res.ok) {
+            const data = await res.json();
+            setAnnees([...annees, data.annee]);
+            setEditAnneeData({
+                id: data.annee.id,
+                nom: data.annee.nom,
+                date_debut: data.annee.date_debut.split('T')[0],
+                date_fin: data.annee.date_fin ? data.annee.date_fin.split('T')[0] : ''
+            });
+        }
+    };
+
+    const handleActivateAnnee = async (id: number) => {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`/api/academique/annees/${id}/activer`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+        });
+        if (res.ok) {
+            const data = await res.json();
+            setActiveAnnee(data.annee);
+            setAnnees(annees.map((a:any) => ({ ...a, est_active: a.id === id })));
+            alert("Période activée et visible par les étudiants !");
+        }
+    };
+
+    const handleDeleteDepartement = async (id: number, e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (!confirm('Supprimer ce département et toutes ses filières ?')) return;
+        const token = localStorage.getItem('token');
+        const res = await fetch(`/api/academique/departements/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+        if (res.ok) setDepartements(departements.filter(d => d.id !== id));
+    };
+
+    const handleAddFiliere = async () => {
+        if (!selectedDept) return;
+        const nom = prompt("Nom de la filière (ex: Système Informatique et Logiciel) :");
+        const code = prompt("Code de la filière (ex: SIL) :");
+        if (!nom || !code) return;
+        const token = localStorage.getItem('token');
+        const res = await fetch('/api/academique/filieres', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ nom, code, departement_id: selectedDept.id })
+        });
+        if (res.ok) {
+            const data = await res.json();
+            const updatedDept = { ...selectedDept, filieres: [...(selectedDept.filieres || []), data.filiere] };
+            setSelectedDept(updatedDept);
+            setDepartements(departements.map(d => d.id === selectedDept.id ? updatedDept : d));
+        }
+    };
+
+    const handleDeleteFiliere = async (id: number, e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (!confirm('Supprimer cette filière ?')) return;
+        const token = localStorage.getItem('token');
+        const res = await fetch(`/api/academique/filieres/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+        if (res.ok) {
+            const updatedDept = { ...selectedDept, filieres: selectedDept.filieres.filter((f:any) => f.id !== id) };
+            setSelectedDept(updatedDept);
+            setDepartements(departements.map(d => d.id === selectedDept.id ? updatedDept : d));
+        }
+    };
+
+    const handleAddMatiere = async (semestre: number) => {
+        if (!selectedFiliere) return;
+        const nom = prompt(`Nom de la matière pour le Semestre ${semestre} :`);
+        const code = prompt("Code de la matière (ex: ALP1104) :");
+        const credits = prompt("Crédits ECTS (ex: 6) :");
+        if (!nom || !code || !credits) return;
+        const token = localStorage.getItem('token');
+        const res = await fetch('/api/academique/matieres', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ nom, code, credits: parseInt(credits), semestre, filiere_id: selectedFiliere.id })
+        });
+        if (res.ok) {
+            const data = await res.json();
+            alert("Matière ajoutée ! Vous pourrez y lier des Éléments Constitutifs plus tard.");
+            
+            const newMatiere = { ...data.matiere, elements_constitutifs: [] };
+            const updatedMatieres = [...(selectedFiliere.matieres || []), newMatiere];
+            const updatedFiliere = { ...selectedFiliere, matieres: updatedMatieres };
+            
+            setSelectedFiliere(updatedFiliere);
+
+            // Synchroniser avec le département sélectionné
+            if (selectedDept) {
+                const updatedFilieres = selectedDept.filieres.map((f:any) => 
+                    f.id === selectedFiliere.id ? updatedFiliere : f
+                );
+                const updatedDept = { ...selectedDept, filieres: updatedFilieres };
+                setSelectedDept(updatedDept);
+                setDepartements(departements.map(d => d.id === selectedDept.id ? updatedDept : d));
+            }
+        }
+    };
+
+    const handleDeleteMatiere = async (id: number) => {
+        if (!confirm('Supprimer cette matière et ses EC ?')) return;
+        const token = localStorage.getItem('token');
+        const res = await fetch(`/api/academique/matieres/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+        if (res.ok) {
+            setSelectedFiliere({ ...selectedFiliere, matieres: selectedFiliere.matieres.filter((m:any) => m.id !== id) });
+        }
+    };
+
+    const handleAddEC = async (matiereId: number) => {
+        const nom = prompt("Nom de l'élément constitutif (ex: Algorithmique) :");
+        if (!nom) return;
+        const token = localStorage.getItem('token');
+        const res = await fetch('/api/academique/elements', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ nom, matiere_id: matiereId })
+        });
+        if (res.ok) {
+            const data = await res.json();
+            const updatedMatieres = selectedFiliere.matieres.map((m:any) => 
+                m.id === matiereId ? { ...m, elements_constitutifs: [...(m.elements_constitutifs || []), data.ec] } : m
+            );
+            setSelectedFiliere({ ...selectedFiliere, matieres: updatedMatieres });
+        }
+    };
+
+    const handleDeleteEC = async (id: number, matiereId: number) => {
+        if (!confirm('Supprimer cet Élément Constitutif ?')) return;
+        const token = localStorage.getItem('token');
+        const res = await fetch(`/api/academique/elements/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+        if (res.ok) {
+            const updatedMatieres = selectedFiliere.matieres.map((m:any) => 
+                m.id === matiereId ? { ...m, elements_constitutifs: m.elements_constitutifs.filter((ec:any) => ec.id !== id) } : m
+            );
+            setSelectedFiliere({ ...selectedFiliere, matieres: updatedMatieres });
+        }
+    };
 
     const handlePostNews = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -517,49 +735,235 @@ export default function DashboardAdmin() {
                 return (
                     <div className="space-y-10">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                            {/* Facultés et Filières */}
-                            <Card title="Structure Académique" subtitle="Facultés & Départements" action={<Plus size={20} className="text-[#8178BB] cursor-pointer" />}>
+                            {/* Navigation Structure Académique */}
+                            <Card 
+                                title={selectedFiliere ? `Filière: ${selectedFiliere.code}` : selectedDept ? `Département: ${selectedDept.nom}` : "Structure Académique"} 
+                                subtitle={selectedFiliere ? selectedFiliere.nom : selectedDept ? "Gestion des filières" : "Facultés & Départements"} 
+                                action={
+                                    <div className="flex gap-2">
+                                        {(selectedDept || selectedFiliere) && (
+                                            <button onClick={() => selectedFiliere ? setSelectedFiliere(null) : setSelectedDept(null)} className="text-xs font-bold text-gray-400 hover:text-gray-800">Retour</button>
+                                        )}
+                                        {!selectedFiliere && (
+                                            <Plus size={20} className="text-[#8178BB] cursor-pointer" onClick={selectedDept ? handleAddFiliere : handleAddDepartement} />
+                                        )}
+                                    </div>
+                                }
+                            >
                                 <div className="space-y-4">
-                                    {[
-                                        { name: 'Faculté des Sciences (FAS)', depts: 5, color: 'border-blue-500' },
-                                        { name: 'Faculté de Droit (FAD)', depts: 3, color: 'border-purple-500' },
-                                        { name: 'École de Management (EM)', depts: 4, color: 'border-emerald-500' }
-                                    ].map((fac, i) => (
-                                        <div key={i} className={`p-6 bg-white border-l-4 ${fac.color} rounded-2xl shadow-sm hover:translate-x-2 transition-all cursor-pointer`}>
-                                            <div className="flex justify-between items-center">
-                                                <p className="font-bold text-gray-800">{fac.name}</p>
-                                                <span className="text-[10px] font-black bg-[#F3F2F9] px-3 py-1 rounded-full">{fac.depts} Filières</span>
+                                    {!selectedDept && (
+                                        // VUE 1 : Liste des Départements
+                                        departements.length === 0 ? (
+                                            <p className="text-xs text-gray-400 italic">Aucun département configuré.</p>
+                                        ) : departements.map((dept: any, i: number) => {
+                                            const colors = ['border-blue-500', 'border-purple-500', 'border-emerald-500', 'border-orange-500'];
+                                            const color = colors[i % colors.length];
+                                            return (
+                                                <div key={dept.id} onClick={() => setSelectedDept(dept)} className={`p-6 bg-white border-l-4 ${color} rounded-2xl shadow-sm hover:translate-x-2 transition-all cursor-pointer group`}>
+                                                    <div className="flex justify-between items-center">
+                                                        <p className="font-bold text-gray-800">{dept.nom}</p>
+                                                        <div className="flex items-center gap-4">
+                                                            <span className="text-[10px] font-black bg-[#F3F2F9] px-3 py-1 rounded-full">
+                                                                {dept.filieres ? dept.filieres.length : 0} Filières
+                                                            </span>
+                                                            <button onClick={(e) => handleDeleteDepartement(dept.id, e)} className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600">
+                                                                <XCircle size={16} />
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })
+                                    )}
+
+                                    {selectedDept && !selectedFiliere && (
+                                        // VUE 2 : Liste des Filières du Département
+                                        (!selectedDept.filieres || selectedDept.filieres.length === 0) ? (
+                                            <p className="text-xs text-gray-400 italic">Aucune filière dans ce département.</p>
+                                        ) : selectedDept.filieres.map((fil: any) => (
+                                            <div key={fil.id} onClick={() => setSelectedFiliere(fil)} className="p-4 bg-gray-50 border border-gray-100 rounded-2xl shadow-sm hover:bg-gray-100 cursor-pointer flex justify-between items-center group">
+                                                <div>
+                                                    <p className="font-bold text-gray-800">{fil.nom}</p>
+                                                    <p className="text-[10px] font-bold text-[#8178BB] uppercase tracking-widest">{fil.code}</p>
+                                                </div>
+                                                <button onClick={(e) => handleDeleteFiliere(fil.id, e)} className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600">
+                                                    <XCircle size={16} />
+                                                </button>
                                             </div>
+                                        ))
+                                    )}
+
+                                    {selectedFiliere && (
+                                        // VUE 3 : Maquette de la Filière
+                                        <div className="space-y-6">
+                                            {[1, 2, 3].map(annee => (
+                                                <div key={annee} className="bg-[#F3F2F9] rounded-3xl p-6">
+                                                    <h4 className="font-black text-gray-800 mb-4">Licence {annee}</h4>
+                                                    <div className="grid grid-cols-1 gap-6">
+                                                        {[annee * 2 - 1, annee * 2].map(semestre => (
+                                                            <div key={semestre} className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+                                                                <div 
+                                                                    className="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-50 transition-colors"
+                                                                    onClick={() => setExpandedSemester(expandedSemester === semestre ? null : semestre)}
+                                                                >
+                                                                    <p className="text-sm font-black uppercase text-[#8178BB] flex items-center gap-2">
+                                                                        <ChevronRight className={`transition-transform ${expandedSemester === semestre ? 'rotate-90' : ''}`} size={16} />
+                                                                        Semestre {semestre}
+                                                                    </p>
+                                                                    <span className="text-[10px] font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">
+                                                                        {((selectedFiliere.matieres || []).filter((m:any) => m.semestre === semestre)).length} Matières
+                                                                    </span>
+                                                                </div>
+
+                                                                <AnimatePresence>
+                                                                    {expandedSemester === semestre && (
+                                                                        <motion.div 
+                                                                            initial={{ height: 0, opacity: 0 }} 
+                                                                            animate={{ height: 'auto', opacity: 1 }} 
+                                                                            exit={{ height: 0, opacity: 0 }}
+                                                                            className="border-t border-gray-50 bg-gray-50/50"
+                                                                        >
+                                                                            <div className="p-4 space-y-4">
+                                                                                <div className="flex justify-end">
+                                                                                    <button onClick={() => handleAddMatiere(semestre)} className="text-[10px] font-black uppercase tracking-widest text-white bg-[#8178BB] px-4 py-2 rounded-xl shadow-sm hover:scale-105 transition-all flex items-center gap-2">
+                                                                                        <Plus size={14} /> Ajouter une Matière
+                                                                                    </button>
+                                                                                </div>
+                                                                                
+                                                                                {(selectedFiliere.matieres || []).filter((m:any) => m.semestre === semestre).map((m:any) => (
+                                                                                    <div key={m.id} className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
+                                                                                        <div className="flex justify-between items-start mb-4">
+                                                                                            <div>
+                                                                                                <div className="flex items-center gap-3">
+                                                                                                    <span className="font-black text-[#8178BB] bg-[#8178BB]/10 px-2.5 py-1 rounded-lg text-xs tracking-widest">{m.code}</span>
+                                                                                                    <span className="text-gray-400 font-bold text-xs">{m.credits} CRÉDITS</span>
+                                                                                                </div>
+                                                                                                <p className="text-lg font-black text-gray-800 mt-2">{m.nom}</p>
+                                                                                            </div>
+                                                                                            <button onClick={() => handleDeleteMatiere(m.id)} className="text-red-400 hover:text-red-600 p-2 hover:bg-red-50 rounded-xl transition-all">
+                                                                                                <XCircle size={18} />
+                                                                                            </button>
+                                                                                        </div>
+
+                                                                                        <div className="pl-4 border-l-2 border-gray-100 space-y-2">
+                                                                                            <div className="flex justify-between items-center mb-2">
+                                                                                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Éléments Constitutifs (EC)</p>
+                                                                                                <button onClick={() => handleAddEC(m.id)} className="text-[10px] text-[#8178BB] font-bold hover:underline">+ Ajouter EC</button>
+                                                                                            </div>
+                                                                                            
+                                                                                            {(!m.elements_constitutifs || m.elements_constitutifs.length === 0) ? (
+                                                                                                <p className="text-xs text-gray-400 italic">Aucun EC configuré.</p>
+                                                                                            ) : (
+                                                                                                <div className="flex flex-wrap gap-2">
+                                                                                                    {m.elements_constitutifs.map((ec:any) => (
+                                                                                                        <div key={ec.id} className="flex items-center gap-2 bg-[#F3F2F9] px-3 py-1.5 rounded-xl border border-gray-200 group">
+                                                                                                            <span className="text-xs font-bold text-gray-600">{ec.nom}</span>
+                                                                                                            <button onClick={() => handleDeleteEC(ec.id, m.id)} className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600">
+                                                                                                                <XCircle size={12} />
+                                                                                                            </button>
+                                                                                                        </div>
+                                                                                                    ))}
+                                                                                                </div>
+                                                                                            )}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                ))}
+                                                                            </div>
+                                                                        </motion.div>
+                                                                    )}
+                                                                </AnimatePresence>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            ))}
                                         </div>
-                                    ))}
+                                    )}
                                 </div>
                             </Card>
 
                             {/* Années et Salles */}
                             <div className="grid grid-cols-1 gap-6">
-                                <Card title="Année Académique" subtitle="Paramétrage Dates">
-                                    <div className="flex items-center justify-between p-6 bg-blue-50 border border-blue-100 rounded-3xl">
-                                        <div>
-                                            <p className="font-black text-blue-900 text-lg">2024 - 2025</p>
-                                            <p className="text-xs text-blue-700/70 font-bold uppercase tracking-widest mt-1">Début: Sept 2024 | Fin: Juil 2025</p>
-                                        </div>
-                                        <Calendar className="text-blue-500" size={32} />
-                                    </div>
-                                    <button className="w-full mt-6 py-3 rounded-2xl border-2 border-dashed border-gray-100 text-[10px] font-black text-gray-400 uppercase tracking-widest hover:border-[#8178BB] hover:text-[#8178BB] transition-all">
-                                        Configurer nouvelle période
-                                    </button>
-                                </Card>
-                                <Card title="Inventaire Salles" subtitle="Capacité & Occupation">
-                                    <div className="flex justify-between items-center bg-[#F3F2F9] p-6 rounded-3xl">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-gray-400"><MapPin size={20} /></div>
+                                <Card title="Modification de Période" subtitle={editAnneeData.id === activeAnnee?.id ? "Période Actuelle" : "Édition en cours"}>
+                                    {editAnneeData.id ? (
+                                        <div className={`p-6 border rounded-3xl space-y-4 ${editAnneeData.id === activeAnnee?.id ? 'bg-blue-50/50 border-blue-100' : 'bg-white border-gray-200'}`}>
                                             <div>
-                                                <p className="text-sm font-black">24 Salles Actives</p>
-                                                <p className="text-[10px] text-gray-400 font-bold uppercase">Capacité Totale: 1,200 places</p>
+                                                <label className="text-[10px] font-black text-[#8178BB] uppercase tracking-widest mb-1 block">Titre (affiché aux étudiants)</label>
+                                                <input 
+                                                    type="text" 
+                                                    value={editAnneeData.nom} 
+                                                    onChange={e => setEditAnneeData({...editAnneeData, nom: e.target.value})}
+                                                    className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm font-bold text-gray-800 focus:outline-none focus:border-[#8178BB]"
+                                                    placeholder="Ex: PROCHAINE RENTRÉE SCOLAIRE"
+                                                />
                                             </div>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <label className="text-[10px] font-black text-[#8178BB] uppercase tracking-widest mb-1 block">Date (Début ou Unique)</label>
+                                                    <input 
+                                                        type="date" 
+                                                        value={editAnneeData.date_debut} 
+                                                        onChange={e => setEditAnneeData({...editAnneeData, date_debut: e.target.value})}
+                                                        className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm font-bold text-gray-800 focus:outline-none focus:border-[#8178BB]"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="text-[10px] font-black text-[#8178BB] uppercase tracking-widest mb-1 block">Date de Fin (Optionnel)</label>
+                                                    <input 
+                                                        type="date" 
+                                                        value={editAnneeData.date_fin} 
+                                                        onChange={e => setEditAnneeData({...editAnneeData, date_fin: e.target.value})}
+                                                        className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm font-bold text-gray-800 focus:outline-none focus:border-[#8178BB]"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <button onClick={handleUpdateAnnee} className="w-full py-2 bg-[#8178BB] text-white text-xs font-black uppercase tracking-widest rounded-xl hover:bg-[#6A6299] transition-all">
+                                                Enregistrer les modifications
+                                            </button>
                                         </div>
-                                        <button className="text-[10px] font-black uppercase text-[#8178BB] hover:underline">Voir Liste</button>
+                                    ) : (
+                                        <p className="text-xs text-gray-400 italic mb-4">Sélectionnez une période à modifier.</p>
+                                    )}
+                                </Card>
+                                <Card title="Toutes les Périodes" subtitle="Gérer vos événements">
+                                    <div className="space-y-3">
+                                        {annees.map((annee:any) => (
+                                            <div key={annee.id} className={`flex items-center justify-between p-4 rounded-xl border ${annee.est_active ? 'border-[#8178BB] bg-blue-50/50' : 'border-gray-100 bg-white hover:border-gray-300'} transition-all`}>
+                                                <div>
+                                                    <p className={`font-bold text-sm ${annee.est_active ? 'text-[#8178BB]' : 'text-gray-700'}`}>
+                                                        {annee.nom} {annee.est_active && " (Active)"}
+                                                    </p>
+                                                    <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">
+                                                        {annee.date_debut.split('T')[0]} {annee.date_fin && annee.date_fin !== annee.date_debut ? ` - ${annee.date_fin.split('T')[0]}` : ''}
+                                                    </p>
+                                                </div>
+                                                <div className="flex flex-col gap-2">
+                                                    {!annee.est_active && (
+                                                        <button 
+                                                            onClick={() => handleActivateAnnee(annee.id)}
+                                                            className="text-[10px] font-black uppercase text-gray-500 hover:text-green-500 px-3 py-1.5 rounded-lg border border-gray-200 hover:border-green-500 transition-all text-center"
+                                                        >
+                                                            Activer
+                                                        </button>
+                                                    )}
+                                                    <button 
+                                                        onClick={() => setEditAnneeData({
+                                                            id: annee.id,
+                                                            nom: annee.nom,
+                                                            date_debut: annee.date_debut.split('T')[0],
+                                                            date_fin: annee.date_fin ? annee.date_fin.split('T')[0] : ''
+                                                        })}
+                                                        className={`text-[10px] font-black uppercase px-3 py-1.5 rounded-lg border transition-all text-center ${editAnneeData.id === annee.id ? 'bg-[#8178BB] text-white border-[#8178BB]' : 'text-[#8178BB] border-[#8178BB]/30 hover:bg-[#8178BB] hover:text-white'}`}
+                                                    >
+                                                        Modifier
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
+                                    <button onClick={handleAddAnnee} className="w-full mt-4 py-3 rounded-xl border-2 border-dashed border-gray-200 text-[10px] font-black text-gray-400 uppercase tracking-widest hover:border-[#8178BB] hover:text-[#8178BB] transition-all">
+                                        + Ajouter Période
+                                    </button>
                                 </Card>
                             </div>
                         </div>
